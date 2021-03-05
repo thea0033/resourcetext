@@ -1,0 +1,36 @@
+Recipes
+    Increase Transfer Cap
+        Production:1
+        Transfer:-10
+    Miner
+        Ore:-10 
+        Energy:1 
+        Production:1 
+        Mining Jobs:1  
+    E Miner
+        Uranium:-10
+        Energy:1
+        Production:1
+        Uranium Mining Jobs:1
+    Farmer
+        Food:-20
+        Energy:1
+        Biomass:20
+        Production:1
+    Eff Farmer
+        Food:-10
+        Energy:1
+        Biomass:5
+        Production:1
+    Factory Worker Smelt
+        Metal:-40
+        Ore:10
+        Energy:3
+        Production:1
+        Factory Jobs:1
+    Factory Worker Mnfg
+        Luxuries:-20
+        Metal:10
+        Energy:3
+        Production:1
+        Factory Jobs:1

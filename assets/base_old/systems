@@ -1,0 +1,42 @@
+Systems
+    Sol
+        Objects
+            Earth
+                Components
+                    Hidden
+                        Init:1
+                        Small Planet:4
+                        Air Pocket:4
+                        Mineral Deposit:4
+                        Uranium Deposit:4
+                        Water Pocket:10
+                        Biosphere:4
+                    Accessible
+                        Solar Panels:4
+                        Living Quarters:10
+                        Factory:1
+                        Storage:10
+                Resources
+                    Population:5
+                    Food:5
+                    Water:5
+                    Air:5
+                Location
+                    x:0
+                    y:0
+            Test Ship
+                Components
+                    Hidden
+                        Init:1
+                    Accessible
+                        Hull:4
+                        Engine:1
+                        Battery:1
+                        Living Quarters:1
+                        Storage:1
+                Location
+                    x:0
+                    y:0
+        Location
+            x:0
+            y:0

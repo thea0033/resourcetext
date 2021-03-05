@@ -1,0 +1,56 @@
+Resources
+    Energy
+        Move Cost:0
+    Water
+        Move Cost:1
+    Air
+        Move Cost:1
+    Ore
+        Move Cost:1
+    Uranium
+        Move Cost:4
+    Biomass
+        Move Cost:5
+    Food
+        Move Cost:1
+    Metal
+        Move Cost:1
+    Population
+        Move Cost:10
+    Luxuries
+        Move Cost:1
+    Production
+        Move Cost:1
+    Transfer
+        Move Cost:0
+    Fuel
+        Move Cost:1
+    Movement
+        Move Cost:MAX
+    Space
+        Move Cost:MAX
+    Living Space
+        Move Cost:MAX
+    Mass
+        Move Cost:MAX
+    Mining Jobs
+        Move Cost:MAX
+    Uranium Mining Jobs
+        Move Cost:MAX
+    Factory Jobs
+        Move Cost:MAX
+ResourceMod
+    Population
+        Requires
+            Air:1
+            Water:1
+            Food:1
+            Production:-1
+        Growth:0.1
+    Biomass
+        Requires
+            Water:0.1
+            Air:-0.1
+        Growth:0.1
+    Transfer
+        IsTransfer

@@ -1,0 +1,6 @@
+"brace_style" = "PreferSameLine"
+"wrap_comments" = true
+"comment_width" = 150
+"control_brace_style" = "AlwaysSameLine"
+"fn_args_layout" = "Compressed"
+"max_width" = 150

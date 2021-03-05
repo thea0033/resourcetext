@@ -1,0 +1,46 @@
+Components
+    Hidden
+        Small Body
+            Cost
+                Space:-200
+                Mass:-1000
+        Small Planet
+            Cost
+                Space:-2000
+                Mass:-10000
+        Brown Dwarf
+            Cost
+                Mass:-10000
+        Red Dwarf
+            Cost
+                Mass:-30000
+        Yellow Dwarf
+            Cost
+                Mass:-100000
+        Red Giant
+            Cost
+                Mass:-10000
+        Black Hole
+            Cost
+                Mass:-1000000
+        Mineral Deposit
+            Surplus
+                Mining Jobs:3
+        Air Pocket
+            Surplus
+                Air:30
+        Uranium Deposit
+            Surplus
+                Uranium Mining Jobs:3
+        Water Pocket
+            Surplus
+                Water:10
+        Biosphere
+            Storage
+                Biomass:100
+            Cost
+                Biomass:-100
+        Init
+            Storage
+                Space:MAX
+                Mass:MAX

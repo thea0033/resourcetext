@@ -1,0 +1,60 @@
+{
+    "systems" : {
+        "Sol" : {
+            "objects" : {
+                "Earth" : {
+                    "name": "Earth",
+                    "components" : {
+                        "Solar Panels":4,
+                        "Living Quarters":10,
+                        "Factory":1,
+                        "Storage":10
+                    },
+                    "hidden_components" : {
+                        "Init":1,
+                        "Small Planet":4,
+                        "Air Pocket":4,
+                        "Mineral Deposit":4,
+                        "Uranium Deposit":4,
+                        "Water Pocket":10,
+                        "Biosphere":4
+                    },
+                    "resources" : {
+                        "current" : { 
+                            "Population":5,
+                            "Food":5,
+                            "Water":5,
+                            "Air":5
+                        },
+                        "storage" : {},
+                        "surplus" : {}
+                    },
+                    "location" : {
+                        "x":0,
+                        "y":0
+                    }
+                },
+                "Test Ship": {
+                    "name": "Test Ship",
+                    "components" : {},
+                    "hidden_components" : {
+                        "Init":1
+                    },
+                    "location" : {
+                        "x":0,
+                        "y":0
+                    },
+                    "resources" : {
+                        "current" : {},
+                        "storage" : {},
+                        "surplus" : {}
+                    }
+                }
+            },
+            "location" : {
+                "x":0,
+                "y":0
+            }
+        }
+    }
+}

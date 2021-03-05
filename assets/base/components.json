@@ -1,0 +1,323 @@
+{
+    "accessible": {
+      "Fuel Burner": {
+        "surplus": {
+          "Energy": 10,
+          "Water": 10,
+          "Fuel": -2
+        },
+        "storage": {},
+        "cost": {
+          "Space": 1,
+          "Mass": -3,
+          "Metal": 500,
+          "Production": 3
+        }
+      },
+      "Soil Farm": {
+        "surplus": {},
+        "storage": {
+          "Biomass": 200
+        },
+        "cost": {
+          "Space": 10,
+          "Metal": 500,
+          "Mass": -3,
+          "Production": 3
+        }
+      },
+      "Fuel Tank": {
+        "surplus": {},
+        "storage": {
+          "Fuel": 500
+        },
+        "cost": {
+          "Mass": -3,
+          "Production": 3,
+          "Space": 1,
+          "Metal": 500
+        }
+      },
+      "Engine": {
+        "surplus": {
+          "Energy": -5,
+          "Movement": 5
+        },
+        "storage": {},
+        "cost": {
+          "Metal": 500,
+          "Mass": -3,
+          "Space": 1,
+          "Production": 3
+        }
+      },
+      "Hull": {
+        "surplus": {},
+        "storage": {},
+        "cost": {
+          "Mass": -3,
+          "Production": 3,
+          "Space": -5,
+          "Metal": 500
+        }
+      },
+      "Living Quarters": {
+        "surplus": {},
+        "storage": {
+          "Population": 100
+        },
+        "cost": {
+          "Production": 1,
+          "Metal": 500,
+          "Mass": -3
+        }
+      },
+      "Factory": {
+        "surplus": {
+          "Factory Jobs": 3
+        },
+        "storage": {},
+        "cost": {
+          "Mass": -3,
+          "Metal": 500,
+          "Space": 1,
+          "Production": 3
+        }
+      },
+      "Solar Panels": {
+        "surplus": {
+          "Energy": 10
+        },
+        "storage": {},
+        "cost": {
+          "Metal": 1000,
+          "Mass": -6,
+          "Production": 5
+        }
+      },
+      "Reactor": {
+        "surplus": {
+          "Uranium": -1,
+          "Energy": 20
+        },
+        "storage": {},
+        "cost": {
+          "Space": 1,
+          "Mass": -3,
+          "Metal": 500
+        }
+      },
+      "Battery": {
+        "surplus": {},
+        "storage": {
+          "Energy": 500
+        },
+        "cost": {
+          "Production": 3,
+          "Mass": -3,
+          "Space": 1,
+          "Metal": 500
+        }
+      },
+      "Hydroponics Farm": {
+        "surplus": {
+          "Energy": -5
+        },
+        "storage": {
+          "Biomass": 200
+        },
+        "cost": {
+          "Space": 1,
+          "Mass": -3,
+          "Production": 3,
+          "Metal": 500
+        }
+      },
+      "Storage": {
+        "surplus": {},
+        "storage": {
+          "Luxuries": 500,
+          "Water": 500,
+          "Ore": 500,
+          "Food": 500,
+          "Metal": 500,
+          "Air": 500
+        },
+        "cost": {
+          "Metal": 500,
+          "Space": 2,
+          "Mass": -3
+        }
+      },
+      "Fuel Plant": {
+        "surplus": {
+          "Fuel": 2,
+          "Energy": -10,
+          "Water": -10
+        },
+        "storage": {},
+        "cost": {
+          "Mass": -3,
+          "Production": 3,
+          "Space": 1,
+          "Metal": 500
+        }
+      }
+    },
+    "hidden": {
+      "Air Pocket": {
+        "surplus": {
+          "Air": 30
+        },
+        "storage": {},
+        "cost": {}
+      },
+      "Red Giant": {
+        "surplus": {},
+        "storage": {},
+        "cost": {
+          "Mass": -10000
+        }
+      },
+      "Biosphere": {
+        "surplus": {},
+        "storage": {
+          "Biomass": 100
+        },
+        "cost": {
+          "Biomass": -100
+        }
+      },
+      "Init": {
+        "surplus": {},
+        "storage": {
+          "Mass": 18446744073709551615,
+          "Space": 18446744073709551615
+        },
+        "cost": {}
+      },
+      "Red Dwarf": {
+        "surplus": {},
+        "storage": {},
+        "cost": {
+          "Mass": -30000
+        }
+      },
+      "Brown Dwarf": {
+        "surplus": {},
+        "storage": {},
+        "cost": {
+          "Mass": -10000
+        }
+      },
+      "Water Pocket": {
+        "surplus": {
+          "Water": 10
+        },
+        "storage": {},
+        "cost": {}
+      },
+      "Uranium Deposit": {
+        "surplus": {
+          "Uranium Mining Jobs": 3
+        },
+        "storage": {},
+        "cost": {}
+      },
+      "Yellow Dwarf": {
+        "surplus": {},
+        "storage": {},
+        "cost": {
+          "Mass": -100000
+        }
+      },
+      "Small Body": {
+        "surplus": {},
+        "storage": {},
+        "cost": {
+          "Mass": -1000,
+          "Space": -200
+        }
+      },
+      "Mineral Deposit": {
+        "surplus": {
+          "Mining Jobs": 3
+        },
+        "storage": {},
+        "cost": {}
+      },
+      "Black Hole": {
+        "surplus": {},
+        "storage": {},
+        "cost": {
+          "Mass": -1000000
+        }
+      },
+      "Small Planet": {
+        "surplus": {},
+        "storage": {},
+        "cost": {
+          "Mass": -10000,
+          "Space": -2000
+        }
+      }
+    },
+    "recipes": {
+      "Factory Worker Smelt": {
+        "cost": {
+          "Production": 1,
+          "Energy": 3,
+          "Ore": 10,
+          "Factory Jobs": 1,
+          "Metal": -40
+        }
+      },
+      "Factory Worker Mnfg": {
+        "cost": {
+          "Energy": 3,
+          "Metal": 10,
+          "Luxuries": -20,
+          "Production": 1,
+          "Factory Jobs": 1
+        }
+      },
+      "Miner": {
+        "cost": {
+          "Production": 1,
+          "Ore": -10,
+          "Mining Jobs": 1,
+          "Energy": 1
+        }
+      },
+      "E Miner": {
+        "cost": {
+          "Production": 1,
+          "Energy": 1,
+          "Uranium": -10,
+          "Uranium Mining Jobs": 1
+        }
+      },
+      "Increase Transfer Cap": {
+        "cost": {
+          "Production": 1,
+          "Transfer": -10
+        }
+      },
+      "Farmer": {
+        "cost": {
+          "Biomass": 20,
+          "Production": 1,
+          "Food": -20,
+          "Energy": 1
+        }
+      },
+      "Eff Farmer": {
+        "cost": {
+          "Energy": 1,
+          "Biomass": 5,
+          "Food": -10,
+          "Production": 1
+        }
+      }
+    }
+  }
