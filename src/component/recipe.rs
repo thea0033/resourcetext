@@ -1,7 +1,4 @@
-use crate::{
-    extra_bits,
-    resources::{ResourceDict, ResourceID},
-};
+use crate::resources::{ResourceDict, ResourceID};
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Recipe {
@@ -9,9 +6,7 @@ pub struct Recipe {
 }
 impl Recipe {
     pub fn new(len: usize) -> Recipe {
-        Recipe {
-            cost: vec![0; len],
-        }
+        Recipe { cost: vec![0; len] }
     }
     pub fn cost(&mut self) -> &mut Vec<i64> {
         &mut self.cost

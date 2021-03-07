@@ -2,13 +2,13 @@ use std::collections::HashMap;
 
 use crate::resources::{ResourceDict, ResourceID};
 
-use super::{Component, Components, recipe::Recipe};
+use super::{recipe::Recipe, Component, Components};
 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct ReadableComponents {
     accessible: HashMap<String, ReadableComponent>,
     hidden: HashMap<String, ReadableComponent>,
-    recipes: HashMap<String, ReadableRecipe>
+    recipes: HashMap<String, ReadableRecipe>,
 }
 impl ReadableComponents {
     pub fn convert(self, rss: &ResourceDict) -> Option<Components> {
@@ -51,9 +51,7 @@ impl Components {
         for (line, name) in self.recipe_list.into_iter().zip(self.recipe_names.into_iter()) {
             recipes.insert(name, line.to_readable(rss));
         }
-        ReadableComponents {
-            accessible, hidden, recipes
-        }
+        ReadableComponents { accessible, hidden, recipes }
     }
 }
 #[derive(serde::Serialize, serde::Deserialize)]
@@ -64,7 +62,7 @@ pub struct ReadableComponent {
 }
 impl ReadableComponent {
     pub fn convert(&self, rss: &ResourceDict) -> Option<Component> {
-        let mut res:Component = Component::new(rss.len());
+        let mut res: Component = Component::new(rss.len());
         for (id, line) in &self.cost {
             res.change_cost(rss.find(id)?, *line);
         }
@@ -79,9 +77,9 @@ impl ReadableComponent {
 }
 impl Component {
     pub fn to_readable(&self, rss: &ResourceDict) -> ReadableComponent {
-        let mut surplus:HashMap<String, i64> = HashMap::new();
-        let mut storage:HashMap<String, u64> = HashMap::new();
-        let mut cost:HashMap<String, i64> = HashMap::new();
+        let mut surplus: HashMap<String, i64> = HashMap::new();
+        let mut storage: HashMap<String, u64> = HashMap::new();
+        let mut cost: HashMap<String, i64> = HashMap::new();
         for (i, line) in self.surplus.iter().enumerate() {
             if *line != 0 {
                 surplus.insert(rss.get(ResourceID::new(i)), *line);
@@ -97,7 +95,7 @@ impl Component {
                 cost.insert(rss.get(ResourceID::new(i)), *line);
             }
         }
-        ReadableComponent { surplus, storage, cost}
+        ReadableComponent { surplus, storage, cost }
     }
 }
 #[derive(serde::Serialize, serde::Deserialize)]
@@ -106,7 +104,7 @@ pub struct ReadableRecipe {
 }
 impl ReadableRecipe {
     pub fn convert(&self, rss: &ResourceDict) -> Option<Recipe> {
-        let mut res:Recipe = Recipe::new(rss.len());
+        let mut res: Recipe = Recipe::new(rss.len());
         for (id, line) in &self.cost {
             res.cost()[rss.find(&id)?.get()] = *line;
         }
@@ -115,7 +113,7 @@ impl ReadableRecipe {
 }
 impl Recipe {
     pub fn to_readable(&self, rss: &ResourceDict) -> ReadableRecipe {
-        let mut cost:HashMap<String, i64> = HashMap::new();
+        let mut cost: HashMap<String, i64> = HashMap::new();
         for (i, line) in self.cost.iter().enumerate() {
             if *line != 0 {
                 cost.insert(rss.get(ResourceID::new(i)), *line);

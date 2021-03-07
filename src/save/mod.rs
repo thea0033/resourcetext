@@ -2,8 +2,8 @@ use serde_json::map::Map;
 use serde_json::Value;
 use std::fs::File;
 
-/// A package that contains public fields. 
-/// It is constructed at the start of the game and removed at the end of it. 
+/// A package that contains public fields.
+/// It is constructed at the start of the game and removed at the end of it.
 pub struct Package {
     pub rss: ResourceDict,
     pub cmp: Components,
@@ -12,12 +12,7 @@ pub struct Package {
 }
 impl Package {
     pub fn new(rss: ResourceDict, cmp: Components, sys: Systems, dir: Directions) -> Package {
-        Package {
-            rss,
-            cmp,
-            sys,
-            dir,
-        }
+        Package { rss, cmp, sys, dir }
     }
 }
 use crate::{

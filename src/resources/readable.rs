@@ -4,7 +4,6 @@ use crate::{extra_bits::to_result, merge::Merge};
 
 use super::{ResourceDict, ResourceID, Resources};
 
-
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct ReadableResourceDict {
     resources: Vec<ReadableResource>,
@@ -13,7 +12,17 @@ pub struct ReadableResourceDict {
     transfer_resource: Option<String>,
 }
 impl ReadableResourceDict {
-    pub fn new(resources: Vec<ReadableResource>, growth: HashMap<String, f64>, requirements: HashMap<String, HashMap<String, f64>>, transfer_resource: Option<String>) -> Self { Self { resources, growth, requirements, transfer_resource } }
+    pub fn new(
+        resources: Vec<ReadableResource>, growth: HashMap<String, f64>, requirements: HashMap<String, HashMap<String, f64>>,
+        transfer_resource: Option<String>,
+    ) -> Self {
+        Self {
+            resources,
+            growth,
+            requirements,
+            transfer_resource,
+        }
+    }
 
     pub fn to_usable(&self) -> Option<ResourceDict> {
         let temp = self.growth.iter();
@@ -34,8 +43,8 @@ impl ReadableResourceDict {
             }
             requirements.insert(ResourceID::new(pos), new_y);
         }
-        let mut names:Vec<String> = Vec::new();
-        let mut transfer_costs:Vec<u64> = Vec::new();
+        let mut names: Vec<String> = Vec::new();
+        let mut transfer_costs: Vec<u64> = Vec::new();
         for line in &self.resources {
             names.push(line.name.clone());
             transfer_costs.push(line.transfer_cost);
@@ -62,7 +71,9 @@ pub struct ReadableResource {
 }
 
 impl ReadableResource {
-    pub fn new(name: String, transfer_cost: u64) -> Self { Self { name, transfer_cost } }
+    pub fn new(name: String, transfer_cost: u64) -> Self {
+        Self { name, transfer_cost }
+    }
 }
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct ReadableResources {

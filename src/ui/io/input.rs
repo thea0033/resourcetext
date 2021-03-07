@@ -1,7 +1,7 @@
 use std::{collections::VecDeque, io::stdin, str::FromStr};
-///Gets a raw string from stdin. 
+///Gets a raw string from stdin.
 pub fn get_str_raw() -> String {
-    let mut s:String = String::new();
+    let mut s: String = String::new();
     stdin().read_line(&mut s).expect("Something went horribly wrong!");
     if let Some('\n') = s.chars().next_back() {
         s.pop();
@@ -16,8 +16,10 @@ pub fn refresh() {
         println!();
     }
 }
-/// Gets a raw string from stdin and parses it into type T. 
-pub fn get_raw<T>(err: &str) -> T where T: FromStr{
+/// Gets a raw string from stdin and parses it into type T.
+pub fn get_raw<T>(err: &str) -> T
+where
+    T: FromStr, {
     loop {
         if let Ok(val) = get_str_raw().parse::<T>() {
             break val;
@@ -25,17 +27,19 @@ pub fn get_raw<T>(err: &str) -> T where T: FromStr{
         println!("{}", err);
     }
 }
-pub fn record<P>(to_record:String, mut w: P) -> String where P:FnMut(String) -> String{
+pub fn record<P>(to_record: String, mut w: P) -> String
+where
+    P: FnMut(String) -> String, {
     w(to_record)
 }
 #[derive(Clone)]
 pub struct Buffer {
-    b:VecDeque<char>
+    b: VecDeque<char>,
 }
 impl Buffer {
-    pub fn read(&mut self) -> char{
+    pub fn read(&mut self) -> char {
         while self.b.is_empty() {
-            let mut f:VecDeque<char> = get_str_raw().chars().collect();
+            let mut f: VecDeque<char> = get_str_raw().chars().collect();
             if f.is_empty() {
                 f.push_back('\n');
             }
@@ -48,8 +52,6 @@ impl Buffer {
         self.b.clear();
     }
     pub fn new() -> Buffer {
-        Buffer {
-            b:VecDeque::new()
-        }
+        Buffer { b: VecDeque::new() }
     }
 }

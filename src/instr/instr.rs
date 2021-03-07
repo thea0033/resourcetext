@@ -1,4 +1,9 @@
-use crate::{component::{ComponentID, Components, RecipeID}, location::Location, resources::ResourceDict, systems::{Systems, object_id::ObjectID, system_id::SystemID}};
+use crate::{
+    component::{ComponentID, Components, RecipeID},
+    location::Location,
+    resources::ResourceDict,
+    systems::{object_id::ObjectID, system_id::SystemID, Systems},
+};
 
 use super::condition::Condition;
 

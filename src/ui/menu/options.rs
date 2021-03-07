@@ -2,15 +2,14 @@ use std::cmp::min;
 
 use super::keys::Keys;
 
-
 pub struct OptionTable {
-    others: String, // Printed first
+    others: String,               // Printed first
     context: Vec<Option<String>>, // Printed second
-    numbered: Vec<String>, // Printed last
-    pages: usize
+    numbered: Vec<String>,        // Printed last
+    pages: usize,
 }
 impl OptionTable {
-    pub fn print(&self, page:usize, k: &Keys) {
+    pub fn print(&self, page: usize, k: &Keys) {
         println!("{}", self.others);
         println!();
         for (i, line) in self.context.iter().enumerate() {
@@ -25,10 +24,10 @@ impl OptionTable {
             println!("{}. {}", i % 10, self.numbered[i]);
         }
     }
-    pub fn new(others: String, numbered: Vec<String>, context: Vec<Option<String>>) -> OptionTable{
+    pub fn new(others: String, numbered: Vec<String>, context: Vec<Option<String>>) -> OptionTable {
         OptionTable {
-            context, 
-            pages: (numbered.len() + 9 ) / 10,
+            context,
+            pages: (numbered.len() + 9) / 10,
             numbered,
             others,
         }

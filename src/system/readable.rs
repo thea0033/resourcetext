@@ -1,17 +1,23 @@
-
 use std::collections::HashMap;
 
-use crate::{component::Components, instr::Directions, location::Location, merge::Merge, object::readable::ReadableObject, resources::ResourceDict, systems::{Systems, system_id::SystemID}};
+use crate::{
+    component::Components,
+    instr::Directions,
+    location::Location,
+    merge::Merge,
+    object::readable::ReadableObject,
+    resources::ResourceDict,
+    systems::{system_id::SystemID, Systems},
+};
 
-use super::System;
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct ReadableSystem {
     location: Location,
     objects: HashMap<String, ReadableObject>,
 }
 impl ReadableSystem {
-    /// Imports the system into the systems object supplied. Assumes that the system has already been created. 
-    pub fn convert(self, sys: &mut Systems, id: SystemID, dir: &mut Directions, rss: &ResourceDict, cmp: &Components) -> Result<(), String>{
+    /// Imports the system into the systems object supplied. Assumes that the system has already been created.
+    pub fn convert(self, sys: &mut Systems, id: SystemID, dir: &mut Directions, rss: &ResourceDict, cmp: &Components) -> Result<(), String> {
         sys.get_system_mut(id).move_to(self.location); // Changes location
         for (name, line) in self.objects {
             sys.add_made_object(id, line.convert(rss, cmp, id)?, name, dir);
@@ -26,5 +32,5 @@ impl ReadableSystem {
 impl Merge for ReadableSystem {
     fn merge(&mut self, other: ReadableSystem) {
         *self = other;
-    }//Merging two systems overwrites the former. Use the append function to merge them together. 
+    } //Merging two systems overwrites the former. Use the append function to merge them together.
 }

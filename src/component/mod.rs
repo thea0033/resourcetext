@@ -1,8 +1,6 @@
-pub mod recipe;
 pub mod readable;
-use std::collections::HashMap;
+pub mod recipe;
 
-use crate::extra_bits;
 use crate::resources::*;
 
 use self::recipe::Recipe;

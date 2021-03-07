@@ -1,4 +1,4 @@
-use std::{collections::HashMap, ops::AddAssign};
+use std::collections::HashMap;
 use std::hash::Hash;
 
 pub trait Merge {
@@ -9,7 +9,12 @@ impl<T> Merge for Vec<T> {
         self.append(&mut other);
     }
 }
-impl<T, U> Merge for HashMap<T, U> where U: Merge, T: Eq, T: Hash{
+impl<T, U> Merge for HashMap<T, U>
+where
+    U: Merge,
+    T: Eq,
+    T: Hash,
+{
     fn merge(&mut self, other: Self) {
         for (key, line) in other {
             if self.get(&key).is_some() {
@@ -20,12 +25,12 @@ impl<T, U> Merge for HashMap<T, U> where U: Merge, T: Eq, T: Hash{
         }
     }
 }
-impl Merge for u64{
+impl Merge for u64 {
     fn merge(&mut self, other: Self) {
         *self += other;
     }
 }
-impl Merge for i64{
+impl Merge for i64 {
     fn merge(&mut self, other: Self) {
         *self += other;
     }

@@ -1,17 +1,9 @@
 pub mod condition;
 use crate::resources::*;
 use crate::systems::*;
-use crate::{
-    component::{ComponentID, Components, RecipeID},
-    location::*,
-    systems::{object_id::ObjectID, system_id::SystemID},
-    ui::io::ansi,
-};
+use crate::{component::Components, systems::object_id::ObjectID, ui::io::ansi};
 pub mod instr;
 use instr::*;
-
-use crate::instr::condition::Condition;
-
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Queue {

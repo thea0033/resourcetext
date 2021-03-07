@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
-use crate::{component::Components, instr::Directions, location::Location, merge::Merge, resources::ResourceDict, system::{System, readable::ReadableSystem}};
+use crate::{component::Components, instr::Directions, location::Location, merge::Merge, resources::ResourceDict, system::readable::ReadableSystem};
 
-use super::{Systems, system_id::SystemID};
+use super::{system_id::SystemID, Systems};
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct ReadableSystems {
     systems: HashMap<String, ReadableSystem>,
@@ -18,7 +18,7 @@ impl ReadableSystems {
     }
 }
 impl Merge for ReadableSystems {
-    fn merge(&mut self, mut other: Self) {
+    fn merge(&mut self, other: Self) {
         self.systems.merge(other.systems);
     }
 }

@@ -1,7 +1,10 @@
-use crate::{component::readable::ReadableComponents, constants::*, file::read_basic, resources::readable::ReadableResourceDict, save::Package, systems::readable::ReadableSystems};
+use crate::{
+    component::readable::ReadableComponents, constants::*, file::read_basic, resources::readable::ReadableResourceDict, save::Package,
+    systems::readable::ReadableSystems,
+};
 use std::{collections::HashMap, str::FromStr};
 
-use crate::{component::recipe::Recipe};
+use crate::component::recipe::Recipe;
 use crate::{
     component::{Component, Components},
     file::{file_object::FileObject, read_folder},
@@ -21,7 +24,7 @@ pub fn generate_package(path: &str) -> Result<Package, String> {
 
 pub fn sys(rss: &ResourceDict, cmp: &Components, dir: &mut Directions, path: &str) -> Result<Systems, String> {
     let file = format!("{}\\{}", path, SYSTEMS);
-    let readable:ReadableSystems = crate::extra_bits::result_compat(serde_json::from_str(&read_basic(&file)), |x| format!("{:?}", x))?;
+    let readable: ReadableSystems = crate::extra_bits::result_compat(serde_json::from_str(&read_basic(&file)), |x| format!("{:?}", x))?;
     readable.convert(rss, cmp, dir)
 }
 pub fn sys_old(rss: &ResourceDict, cmp: &Components, dir: &mut Directions, file: &FileObject) -> Systems {
@@ -85,12 +88,12 @@ pub fn grab_location(file: &FileObject) -> Location {
 }
 pub fn rss(path: &str) -> Result<ResourceDict, String> {
     let file = format!("{}\\{}", path, RESOURCES);
-    let readable:ReadableResourceDict = crate::extra_bits::result_compat(serde_json::from_str(&read_basic(&file)), |x| format!("{:?}", x))?;
+    let readable: ReadableResourceDict = crate::extra_bits::result_compat(serde_json::from_str(&read_basic(&file)), |x| format!("{:?}", x))?;
     crate::extra_bits::to_result(readable.to_usable(), "Couldn't convert resourcedict into a usable format!".to_string())
 }
 pub fn cmp(rss: &ResourceDict, path: &str) -> Result<Components, String> {
     let file = format!("{}\\{}", path, RESOURCES);
-    let readable:ReadableComponents = crate::extra_bits::result_compat(serde_json::from_str(&read_basic(&file)), |x| format!("{:?}", x))?;
+    let readable: ReadableComponents = crate::extra_bits::result_compat(serde_json::from_str(&read_basic(&file)), |x| format!("{:?}", x))?;
     crate::extra_bits::to_result(readable.convert(rss), "Couldn't convert resourcedict into a usable format!".to_string())
 }
 pub fn rss_old(file: &FileObject) -> ResourceDict {
@@ -116,7 +119,7 @@ pub fn rss_old(file: &FileObject) -> ResourceDict {
         let _ = 1;
         panic!("No resource object was found in {:?}!", file);
     }
-    let mut req1:HashMap<ResourceID, f64> = HashMap::new();
+    let mut req1: HashMap<ResourceID, f64> = HashMap::new();
     let mut req2: HashMap<ResourceID, HashMap<ResourceID, f64>> = HashMap::new();
     let mut req3: Option<ResourceID> = None;
     if let Some(val) = file.get(RSSMOD) {
@@ -124,7 +127,10 @@ pub fn rss_old(file: &FileObject) -> ResourceDict {
     }
     ResourceDict::new(names, transfer_costs, req1, req2, req3)
 }
-pub fn rss_mod( file: &FileObject, names: &Vec<String>, req1: &mut HashMap<ResourceID, f64>, req2: &mut HashMap<ResourceID, HashMap<ResourceID, f64>>, req3: &mut Option<ResourceID>) {
+pub fn rss_mod(
+    file: &FileObject, names: &Vec<String>, req1: &mut HashMap<ResourceID, f64>, req2: &mut HashMap<ResourceID, HashMap<ResourceID, f64>>,
+    req3: &mut Option<ResourceID>,
+) {
     let mut res1: HashMap<ResourceID, f64> = HashMap::new();
     let mut res2: HashMap<ResourceID, HashMap<ResourceID, f64>> = HashMap::new();
     let mut res3: Option<ResourceID> = None;
@@ -149,7 +155,7 @@ pub fn rss_mod( file: &FileObject, names: &Vec<String>, req1: &mut HashMap<Resou
         if let Some(val) = line.get(GROWTH) {
             res1.insert(idpos, parse(val, f64::MAX));
         }
-        if  line.get(TRANSFER).is_some() {
+        if line.get(TRANSFER).is_some() {
             if res3.is_none() {
                 res3 = Some(idpos);
             } else {

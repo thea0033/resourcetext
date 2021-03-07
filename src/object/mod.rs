@@ -1,13 +1,13 @@
+use crate::component::*;
 use crate::resources::*;
-use crate::{component::*, extra_bits};
 use crate::{location::*, systems::system_id::*};
 
 use self::template::Template;
 mod component;
 mod display;
+pub mod readable;
 pub mod template;
 mod tick;
-pub mod readable;
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Object {
     location: Location,              //The object's current location.

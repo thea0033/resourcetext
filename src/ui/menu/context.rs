@@ -16,8 +16,8 @@ impl Context {
     pub fn new(p: &str) -> Result<Context, serde_json::Error> {
         let s = file::read_basic(p);
         let val = serde_json::from_str::<ReadableContext>(&s)?.get();
-        let refined:Vec<Vec<Option<String>>> = val.into_iter().map(|x| x.1.into_iter().map(|x| x.1).collect()).collect();
+        let refined: Vec<Vec<Option<String>>> = val.into_iter().map(|x| x.1.into_iter().map(|x| x.1).collect()).collect();
 
-        Ok(Context {context:refined})
+        Ok(Context { context: refined })
     }
 }

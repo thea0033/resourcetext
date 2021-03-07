@@ -2,14 +2,11 @@ pub mod file_object;
 use crate::ui::io::ansi;
 use crate::ui::io::input::get_str_raw;
 use io::BufReader;
+use std::{fs, io::Read};
 use std::{
     fs::File,
     io::{self, BufRead, BufWriter, Write},
     path::Path,
-};
-use std::{
-    fs,
-    io::Read,
 };
 #[derive(Debug, Clone)]
 pub struct FilePresets {

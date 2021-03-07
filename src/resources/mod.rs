@@ -156,7 +156,7 @@ impl Resources {
             self.curr[i] += item;
         }
     } //Add the values inputted to current.
-    pub fn add(&mut self, other:&Resources) {
+    pub fn add(&mut self, other: &Resources) {
         self.add_storage_vec(other.get_caps());
         self.add_surplus_vec(other.get_surplusses());
         self.add_curr_vec(other.get_caps());

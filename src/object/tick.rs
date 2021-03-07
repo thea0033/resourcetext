@@ -41,7 +41,9 @@ impl Object {
         satisfied
     }
 }
-pub fn rand_round<T, P>(a: f64, mut b: P) -> T where P:FnMut(f64) -> T{
+pub fn rand_round<T, P>(a: f64, mut b: P) -> T
+where
+    P: FnMut(f64) -> T, {
     if a % 1.0 > rand::random() {
         b(a.ceil())
     } else {

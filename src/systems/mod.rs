@@ -1,7 +1,7 @@
 pub mod object_id;
+pub mod readable;
 pub mod system_id;
 pub mod tick;
-pub mod readable;
 
 use serde::{Deserialize, Serialize};
 
