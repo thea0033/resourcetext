@@ -1,0 +1,25 @@
+{
+    "keys":[ 
+        ["Zero","0", false],
+        ["One","1", false],
+        ["Two","2", false],
+        ["Three","3", false],
+        ["Four","4", false],
+        ["Five","5", false],
+        ["Six","6", false],
+        ["Seven","7", false],
+        ["Eight","8", false],
+        ["Nine", "9", false],
+        ["Exit", "q", true],
+        ["Tick", "t", true],
+        ["Info", "i", true],
+        ["Configure", "h", true],
+        ["Copy", "c", true],
+        ["Paste", "v", true],
+        ["Up", "u", true],
+        ["Down", "d", true],
+        ["Save", "s", true],
+        ["New", "n", true],
+        ["Remove", "r", true]
+    ]
+}

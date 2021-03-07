@@ -1,16 +1,28 @@
-use std::cmp::min;
+pub mod readable;
+pub mod keys;
+pub mod options;
+pub mod context;
+pub mod docs;
+pub mod constants;
+
+
+
+
+
+use self::{context::Context, docs::InfoDocs, keys::Keys, readable::ReadableKeys};
+use self::options::OptionTable;
 
 use super::io::input::Buffer;
 
+#[derive(Debug)]
 pub enum MenuResult {
     Continue,
     Exit, 
-    Tick, 
     Copy, 
     Paste,
     Enter(usize),
 }
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub enum InputResult {
     Invalid = -1,
     Zero,
@@ -32,6 +44,8 @@ pub enum InputResult {
     Up,
     Down,
     Save,
+    New,
+    Remove,
 }
 impl InputResult {
     pub fn from_int(a:i32) -> InputResult {
@@ -57,62 +71,28 @@ impl InputResult {
             16 => Up,
             17 => Down,
             18 => Save,
+            19 => New,
+            20 => Remove,
             _ => panic!("This doesn't represent a valid pattern!")
         }
     }
 }
-pub struct Keys {
-    keys:Vec<char>
+pub fn grab(options: &OptionTable, page: usize, keys: &Keys, b: &mut Buffer) -> InputResult {
+    options.print(page, keys);
+    InputResult::from_int(keys.find(b.read()))
 }
-impl Keys {
-    pub fn create(defaults: Vec<char>) -> Keys {
-        Keys {keys:defaults}
-    }
-    pub fn find(&self, input:char) -> i32 {
-        if let Some(val) = self.keys.iter().position(|x| *x == input) {
-            val as i32
-        } else {
-            -1
-        }
-    }
-}
-pub struct OptionTable {
-    others: String,
-    numbered: Vec<String>,
-    pages: usize
-}
-impl OptionTable {
-    pub fn print(&self, page:usize) {
-        println!("{}", self.others);
-        println!();
-        for i in (self.pages * 10)..min((self.pages + 1) * 10, self.numbered.len()) {
-            println!("{}. {}", i % 10, self.numbered[i]);
-        }
-    }
-    pub fn new(others: String, numbered: Vec<String>) -> OptionTable {
-        OptionTable {
-            others, 
-            pages: (numbered.len() + 9 ) / 10,
-            numbered,
-        }
-    }
-}
-pub fn grab(options: &OptionTable, page: usize, keys: &Keys, a:char) -> InputResult {
-    options.print(page);
-    InputResult::from_int(keys.find(a))
-}
-pub fn grab_menu_res(options: &OptionTable, keys: &mut Keys, b: &mut Buffer) -> MenuResult {
+pub fn grab_menu_res(options: &OptionTable, config: &mut Config) -> MenuResult {
     let mut page:usize = 0;
     loop {
-        let result = grab(options, page, keys, b.read());
+        let result = grab(options, page, &config.keys, &mut config.buffer);
         let id = result as usize;
         match result {
             InputResult::Invalid => {
                 println!("You entered something invalid! ");
-                b.flush();
+                config.buffer.flush();
             }
             _ if id < 10 => {
-                return MenuResult::Enter(id)
+                return MenuResult::Enter(id + page * 10)
             }
             InputResult::Exit => {return MenuResult::Exit}
             InputResult::Tick => {
@@ -120,7 +100,7 @@ pub fn grab_menu_res(options: &OptionTable, keys: &mut Keys, b: &mut Buffer) -> 
                 return MenuResult::Continue
             }
             InputResult::Info => {
-                //do stuff (not implemented yet) TODO: Implement 
+                docs::doc_menu(&InfoDocs::new("assets\\config\\docs.json").doc(), config, "Docs master".to_string());
             }
             InputResult::Configure => {
                 //do stuff (not implemented yet) TODO: Implement 
@@ -132,7 +112,7 @@ pub fn grab_menu_res(options: &OptionTable, keys: &mut Keys, b: &mut Buffer) -> 
                 return MenuResult::Paste
             }
             InputResult::Up => {
-                if page < options.pages - 1{
+                if page < options.pages() - 1{
                     page += 1;
                 }
             }
@@ -145,10 +125,21 @@ pub fn grab_menu_res(options: &OptionTable, keys: &mut Keys, b: &mut Buffer) -> 
         }
     }
 }
+#[derive(Clone)]
+pub struct Config {
+    pub buffer: Buffer, 
+    pub keys: Keys,
+    pub context: Context,
 
-pub fn sample_menu(keys: &mut Keys, b: &mut Buffer) {
-    let options = OptionTable::new("q. Quit".to_string(), vec!["1. die".to_string(), "2. live".to_string()]);
-    let res:MenuResult = grab_menu_res(&options, keys, b);
-
+}
+pub fn sample_menu(config: &mut Config) {
+    let mut n_list:Vec<String> = Vec::new();
+    for i in 0..1000 {
+        n_list.push(format!("{:?}", i));
+    }
+    let new_cfg = config.clone();
+    let options = OptionTable::new(String::new(), n_list, config.context.grab(0));
+    let res:MenuResult = grab_menu_res(&options, config);
+    println!("{:?}", res);
 
 }

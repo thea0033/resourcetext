@@ -28,18 +28,28 @@ pub fn get_raw<T>(err: &str) -> T where T: FromStr{
 pub fn record<P>(to_record:String, mut w: P) -> String where P:FnMut(String) -> String{
     w(to_record)
 }
+#[derive(Clone)]
 pub struct Buffer {
     b:VecDeque<char>
 }
 impl Buffer {
     pub fn read(&mut self) -> char{
         while self.b.is_empty() {
-            self.b.append(&mut get_str_raw().chars().collect());
+            let mut f:VecDeque<char> = get_str_raw().chars().collect();
+            if f.is_empty() {
+                f.push_back('\n');
+            }
+            self.b.append(&mut f);
             refresh();
         }
         self.b.pop_front().expect("Safe unwrap")
     }
     pub fn flush(&mut self) {
         self.b.clear();
+    }
+    pub fn new() -> Buffer {
+        Buffer {
+            b:VecDeque::new()
+        }
     }
 }

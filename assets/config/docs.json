@@ -1,0 +1,31 @@
+{
+    "contents": {
+        "Menu": [[
+            "First",
+            "Second",
+            "Third"
+        ], [
+            {
+                "Endpoint": [
+                    "This is the first thing.",
+                    "This is a placeholder.",
+                    "All lines should be displayed"
+                ]
+            },
+            {
+                "Endpoint": [
+                    "This is the second thing.",
+                    "This is a placeholder.",
+                    "All lines should be displayed"
+                ]
+            },
+            {
+                "Endpoint": [
+                    "This is the third thing.",
+                    "This is a placeholder.",
+                    "All lines should be displayed"
+                ]
+            }
+        ]]
+    }
+}

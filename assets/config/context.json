@@ -1,0 +1,50 @@
+{
+    "context": [
+        ["Menu", [
+            ["Zero", null],
+            ["One", null],
+            ["Two", null],
+            ["Three", null],
+            ["Four", null],
+            ["Five", null],
+            ["Six", null],
+            ["Seven", null],
+            ["Eight", null],
+            ["Nine", null],
+            ["Exit", "Exit"],
+            ["Tick", "Wait a turn"],
+            ["Info", "Grab information"],
+            ["Configure", "Configure input"],
+            ["Copy", "Copy"],
+            ["Paste", "Paste"],
+            ["Up", "Go up"],
+            ["Down", "Go down"],
+            ["Save", "Save the game"],
+            ["New", "Create"],
+            ["Remove", "Remove"]
+        ]],
+        ["Info", [
+            ["Zero", null],
+            ["One", null],
+            ["Two", null],
+            ["Three", null],
+            ["Four", null],
+            ["Five", null],
+            ["Six", null],
+            ["Seven", null],
+            ["Eight", null],
+            ["Nine", null],
+            ["Exit", "Exit"],
+            ["Tick", "Wait a turn"],
+            ["Info", null],
+            ["Configure", "Configure input"],
+            ["Copy", null],
+            ["Paste", null],
+            ["Up", "Go up"],
+            ["Down", "Go down"],
+            ["Save", "Save the game"],
+            ["New", null],
+            ["Remove", null]
+        ]]
+    ]
+}

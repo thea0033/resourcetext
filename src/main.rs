@@ -1,9 +1,10 @@
 #![allow(clippy::ptr_arg)]
 
-use std::{fs::File, io::Write};
 
-use component::{Components, readable::ReadableComponents};
+
+
 use file::FilePresets;
+use ui::{io::input::Buffer, menu::{Config, keys::Keys, context::Context}};
 
 use crate::systems::readable::ReadableSystems;
 mod merge;
@@ -23,4 +24,14 @@ mod system;
 mod systems;
 mod ui;
 pub fn main() {
+    let buffer = Buffer::new();
+    let keys:Keys = Keys::new("assets\\config\\keys.json").unwrap();
+    let context = Context::new("assets\\config\\context.json").expect("Whatever");
+    println!("{:?}", context);
+    let mut config:Config = Config {
+        buffer,
+        keys,
+        context 
+    };
+    ui::menu::sample_menu(&mut config);
 }
