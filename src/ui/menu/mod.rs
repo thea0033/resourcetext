@@ -1,12 +1,17 @@
 pub mod constants;
 pub mod context;
 pub mod docs;
+pub mod game;
 pub mod keys;
 pub mod options;
 pub mod readable;
+pub mod config;
+
+use crate::save::Package;
+use crate::*;
 
 use self::options::OptionTable;
-use self::{context::Context, docs::InfoDocs, keys::Keys};
+use self::{docs::InfoDocs, keys::Keys};
 
 use super::io::input::Buffer;
 
@@ -17,6 +22,8 @@ pub enum MenuResult {
     Copy,
     Paste,
     Enter(usize),
+    New,
+    Remove,
 }
 #[derive(Clone, Copy, Debug)]
 pub enum InputResult {
@@ -77,7 +84,7 @@ pub fn grab(options: &OptionTable, page: usize, keys: &Keys, b: &mut Buffer) -> 
     options.print(page, keys);
     InputResult::from_int(keys.find(b.read()))
 }
-pub fn grab_menu_res(options: &OptionTable, config: &mut Config) -> MenuResult {
+pub fn grab_menu_res(options: &OptionTable, config: &mut Config, pkg: &mut Package) -> MenuResult {
     let mut page: usize = 0;
     loop {
         let result = grab(options, page, &config.keys, &mut config.buffer);
@@ -90,8 +97,50 @@ pub fn grab_menu_res(options: &OptionTable, config: &mut Config) -> MenuResult {
             _ if id < 10 => return MenuResult::Enter(id + page * 10),
             InputResult::Exit => return MenuResult::Exit,
             InputResult::Tick => {
-                //do stuff (not implemented yet) TODO: Implement
+                pkg.tick();
                 return MenuResult::Continue;
+            }
+            InputResult::Info => {
+                docs::doc_menu(&InfoDocs::new("assets\\config\\docs.json").doc(), config, "Docs master".to_string());
+            }
+            InputResult::Configure => {
+                config.configure_keys();
+            }
+            InputResult::Copy => return MenuResult::Copy,
+            InputResult::Paste => return MenuResult::Paste,
+            InputResult::Up => {
+                if page < options.pages() - 1 {
+                    page += 1;
+                }
+            }
+            InputResult::Down => {
+                if page > 0 {
+                    page -= 1;
+                }
+            }
+            InputResult::New => return MenuResult::New,
+            InputResult::Remove => return MenuResult::Remove,
+            _ => {
+                panic!("Something went horribly wrong!")
+            }
+        }
+    }
+}
+pub fn grab_menu_res_restricted(options: &OptionTable, config: &mut Config) -> MenuResult {
+    let mut page: usize = 0;
+    loop {
+        let result = grab(options, page, &config.keys, &mut config.buffer);
+        let id = result as usize;
+        match result {
+            InputResult::Invalid => {
+                println!("You entered something invalid! ");
+                config.buffer.flush();
+            }
+            _ if id < 10 => return MenuResult::Enter(id + page * 10),
+            InputResult::Exit => return MenuResult::Exit,
+            InputResult::Tick => {
+                println!("You entered something invalid! ");
+                config.buffer.flush();
             }
             InputResult::Info => {
                 docs::doc_menu(&InfoDocs::new("assets\\config\\docs.json").doc(), config, "Docs master".to_string());
@@ -111,22 +160,21 @@ pub fn grab_menu_res(options: &OptionTable, config: &mut Config) -> MenuResult {
                     page -= 1;
                 }
             }
-            _ => {}
+            InputResult::New => return MenuResult::New,
+            InputResult::Remove => return MenuResult::Remove,
+            _ => {
+                panic!("Something went horribly wrong!")
+            }
         }
     }
 }
-#[derive(Clone)]
-pub struct Config {
-    pub buffer: Buffer,
-    pub keys: Keys,
-    pub context: Context,
-}
+
 pub fn sample_menu(config: &mut Config) {
     let mut n_list: Vec<String> = Vec::new();
     for i in 0..1000 {
         n_list.push(format!("{:?}", i));
     }
     let options = OptionTable::new(String::new(), n_list, config.context.grab(0));
-    let res: MenuResult = grab_menu_res(&options, config);
+    let res: MenuResult = grab_menu_res_restricted(&options, config);
     println!("{:?}", res);
 }

@@ -27,16 +27,15 @@ impl System {
     pub fn len(&self) -> usize {
         self.objs.len()
     } //The number of objects in the system
-    pub fn display(&self, names: &Vec<String>, sys: &Systems) -> String {
-        let mut res: String = "".to_string();
+    pub fn display(&self, names: &[String], sys: &Systems) -> Vec<String> {
+        let mut res: Vec<String> = Vec::new();
         for i in 0..self.objs.len() {
-            res.push_str(sys.get_object(self.objs[i]).color());
-            res.push_str(&format!("{}. {}\n", i, names[self.objs[i].get()]));
+            res.push(format!("{}{}\n", sys.get_object(self.objs[i]).color(), names[self.objs[i].get()]));
         }
         res
     } //Basic display function
-    pub fn display_filtered(&self, amt_before: usize, will_display: &Vec<bool>, names: &Vec<String>) -> String {
-        let mut res: String = "".to_string();
+    pub fn display_filtered(&self, amt_before: usize, will_display: &[bool], names: &[String]) -> String {
+        let mut res: String = String::new();
         let mut i: usize = 0;
         for d in will_display {
             if *d {

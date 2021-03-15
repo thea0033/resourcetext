@@ -1,11 +1,30 @@
 pub mod readable;
 pub mod recipe;
 
-use crate::resources::*;
+use crate::{resources::*, ui::io::ansi};
 
 use self::recipe::Recipe;
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Components {
+    amts: Vec<usize>,
+    h_amts: Vec<usize>,
+}
+impl Components {
+    pub fn can_add(&self, id: ComponentID, amt: usize) -> bool {
+        if id.is_hidden() {
+            self.h_amts[id.id()] >= amt
+        } else {
+            self.amts[id.id()] >= amt
+        }
+    }
+    pub fn new(size: usize, h_size: usize) -> Components {
+        Components {
+            amts: vec![0; size],
+            h_amts: vec![0; h_size],
+        }
+    }
+}
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+pub struct ComponentDict {
     pub list: Vec<Component>, //list of all accessible components
     pub names: Vec<String>,   //names of all accessible components
     pub hidden_list: Vec<Component>, /* list of all hidden components (hidden = can't install
@@ -14,7 +33,7 @@ pub struct Components {
     pub recipe_list: Vec<Recipe>,  //list of all recipes
     pub recipe_names: Vec<String>, //names of all recipes
 }
-impl Components {
+impl ComponentDict {
     pub fn get(&self, id: ComponentID) -> &Component {
         if !id.is_hidden {
             &self.list[id.id]
@@ -51,8 +70,8 @@ impl Components {
     pub fn get_r_name(&self, id: RecipeID) -> &String {
         &self.recipe_names[id.id]
     } //gets the recipe name from the list
-    pub fn new() -> Components {
-        Components {
+    pub fn new() -> ComponentDict {
+        ComponentDict {
             list: Vec::new(),
             names: Vec::new(),
             hidden_list: Vec::new(),
@@ -74,7 +93,7 @@ impl Components {
         self.recipe_names.append(&mut name);
     } //adds a list of recipes and names to the component dictionary
     pub fn display(&self) -> String {
-        let mut x: String = "".to_string();
+        let mut x: String = String::new();
         for i in 0..self.list.len() {
             x.push_str(&format!("{}: {}", i, &self.names[i]));
             x.push('\n'); //separates them by line
@@ -82,7 +101,7 @@ impl Components {
         x
     } //displays the accessible components
     pub fn display_contained(&self, a: &Vec<usize>) -> String {
-        let mut x: String = "".to_string();
+        let mut x: String = String::new();
         let mut counter: usize = 0;
         for (i, item) in a.iter().enumerate() {
             if *item != 0 {
@@ -95,7 +114,7 @@ impl Components {
     } //displays the accessible components, but filters them based on how many of
       // them there are
     pub fn display_detailed(&self, rss: &ResourceDict) -> String {
-        let mut x: String = "".to_string();
+        let mut x: String = String::new();
         for i in 0..self.list.len() {
             x.push_str(&format!("{}: {}", i, &self.names[i]));
             x.push('\n');
@@ -104,14 +123,14 @@ impl Components {
         x
     }
     pub fn display_one(&self, rss: &ResourceDict, id: ComponentID) -> String {
-        let mut x: String = "".to_string();
+        let mut x: String = String::new();
         x.push_str(&format!("{}: {}", id.id(), &self.names[id.id()]));
         x.push('\n');
         x.push_str(&self.list[id.id()].display(rss));
         x
     }
     pub fn display_r(&self) -> String {
-        let mut x: String = "".to_string();
+        let mut x: String = String::new();
         for i in 0..self.recipe_list.len() {
             x.push_str(&format!("{}: {}", i, &self.recipe_names[i]));
             x.push('\n');
@@ -119,7 +138,7 @@ impl Components {
         x
     }
     pub fn display_contained_r(&self, a: &Vec<usize>) -> String {
-        let mut x: String = "".to_string();
+        let mut x: String = String::new();
         let mut counter: usize = 0;
         for (i, item) in a.iter().enumerate() {
             if *item != 0 {
@@ -131,7 +150,7 @@ impl Components {
         x
     }
     pub fn display_detailed_r(&self, rss: &ResourceDict) -> String {
-        let mut x: String = "".to_string();
+        let mut x: String = String::new();
         for i in 0..self.recipe_list.len() {
             x.push_str(&format!("{}: {}", i, &self.recipe_names[i]));
             x.push('\n');
@@ -141,7 +160,7 @@ impl Components {
         x
     }
     pub fn display_one_r(&self, rss: &ResourceDict, i: RecipeID) -> String {
-        let mut x: String = "".to_string();
+        let mut x: String = String::new();
         x.push_str(&format!("{}: {}", i.id, &self.recipe_names[i.id]));
         x.push('\n');
         x.push_str(&self.recipe_list[i.id].display(rss));
@@ -187,7 +206,7 @@ impl Component {
         }
     } //Basic accessing functions
     pub fn display(&self, rss: &ResourceDict) -> String {
-        let mut x: String = "".to_string();
+        let mut x: String = String::new();
         x.push_str(&self.display_func(rss, "  cost: ", &self.cost, 0));
         x.push_str(&self.display_func(rss, "  surplus: ", &self.surplus, 0));
         x.push_str(&self.display_func(rss, "  storage: ", &self.storage, 0));
@@ -195,14 +214,19 @@ impl Component {
     }
     pub fn display_func<T>(&self, rss: &ResourceDict, msg: &str, a: &Vec<T>, zero: T) -> String
     where
-        T: PartialEq,
+        T: PartialOrd,
         T: Copy,
         T: ToString, {
-        let mut x: String = "".to_string(); //Initializes rseult
+        let mut x: String = String::new(); //Initializes rseult
         let mut flag: bool = false;
         for (i, item) in a.iter().enumerate() {
             //For every resource...
             if *item != zero {
+                if *item > zero {
+                    x.push_str(ansi::GREEN);
+                } else {
+                    x.push_str(ansi::RED);
+                }
                 //Doesn't display resources that you have zero of
                 if !flag {
                     //Does this once, if a resource is present

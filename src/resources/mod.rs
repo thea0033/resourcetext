@@ -153,20 +153,21 @@ impl Resources {
     } //Add the values inputted to storage.
     pub fn add_curr_vec(&mut self, other: &Vec<u64>) {
         for (i, item) in other.iter().enumerate() {
+            println!("Adding {} to {}", self.curr[i], item);
             self.curr[i] += item;
         }
     } //Add the values inputted to current.
     pub fn add(&mut self, other: &Resources) {
+        self.add_curr_vec(other.get_currs());
         self.add_storage_vec(other.get_caps());
         self.add_surplus_vec(other.get_surplusses());
-        self.add_curr_vec(other.get_caps());
     }
-    pub fn rmv_surplus_vec(&mut self, other: &Vec<i64>) {
+    pub fn rmv_surplus_vec(&mut self, other: &[i64]) {
         for (i, item) in other.iter().enumerate() {
             self.surplus[i] -= item;
         }
     } //Same as add_surplus_vec, but negative.
-    pub fn rmv_storage_vec(&mut self, other: &Vec<u64>) -> bool {
+    pub fn rmv_storage_vec(&mut self, other: &[u64]) -> bool {
         for (i, item) in other.iter().enumerate() {
             if self.cap[i] < *item {
                 return false;
@@ -177,7 +178,7 @@ impl Resources {
         }
         true
     } //Spend_unsigned, but removes values from storage instead.
-    pub fn can_rmv_storage_vec(&mut self, other: &Vec<u64>) -> bool {
+    pub fn can_rmv_storage_vec(&mut self, other: &[u64]) -> bool {
         for (i, item) in other.iter().enumerate() {
             if self.cap[i] < *item {
                 return false;
@@ -205,83 +206,49 @@ impl Resources {
         }
     } //Forcefully removes a resoure.
     pub fn display(&self, rss: &ResourceDict, prev: &Resources) -> String {
-        let mut res: String = "".to_string(); //Initializes result
-        res.push_str(&self.display_func_new(
-            rss,
-            "Current resources: ",
-            &self.curr.iter().map(|x| *x as i128).collect(),
-            0,
-            -1,
-            &prev.curr.iter().map(|x| *x as i128).collect(),
-        ));
-        res.push_str(&self.display_func_new(
-            rss,
-            "Projected surplus: ",
-            &self.surplus.iter().map(|x| *x as i128).collect(),
-            0,
-            -1,
-            &prev.surplus.iter().map(|x| *x as i128).collect(),
-        ));
-        res.push_str(&self.display_func_new(
-            rss,
-            "Storage: ",
-            &self.cap.iter().map(|x| *x as i128).collect(),
-            0,
-            -1,
-            &prev.cap.iter().map(|x| *x as i128).collect(),
-        ));
-        res //Adds 3 lines, returns it.
-    } //A basic display function
-    pub fn display_func_new(&self, rss: &ResourceDict, msg: &str, a: &Vec<i128>, zero: i128, max: i128, prev: &Vec<i128>) -> String {
-        let mut x: String = "".to_string(); //Initializes result
-        let mut flag: bool = false; //A flag for if resources exist in this place
-        x.push_str(msg); //Adds the inputted message onto the result.
-        for (i, item) in a.iter().enumerate() {
-            if *item != zero && *item != max || (prev[i] != zero && prev[i] != max) {
-                //If this resource should be displayed...
-                flag = true; //We've displayed at least one resource
-                let diff = item - prev[i]; //Calculates difference
-                match diff.cmp(&zero) {
-                    Ordering::Greater => {
-                        //If we have a positive difference
-                        x.push_str(ansi::GREEN); //The color is green
-                    }
-                    Ordering::Equal => {
-                        //If we have no difference
-                        x.push_str(ansi::YELLOW); //The color is yellow
-                    }
-                    Ordering::Less => {
-                        //If we have a negative difference
-                        x.push_str(ansi::RED); //The color is red
-                    }
-                }
-                x.push_str(&a[i].to_string()); //Adds the number
-                x.push(' '); //space
-                x.push_str(&rss.names[i]); //name
-                x.push(' ');
-                if diff >= zero {
-                    x.push('(');
-                    x.push('+');
-                    x.push_str(&diff.to_string()); //(+val)
-                    x.push(')');
-                } else {
-                    x.push('(');
-                    x.push_str(&diff.to_string()); //(-val)
-                    x.push(')');
-                }
-                x.push(',');
-                x.push(' ');
+        let mut res: String = String::new();
+        for i in 0..rss.len() {
+            let id = ResourceID::new(i);
+            if self.should_display(prev, id) {
+                res.push_str(&format!(
+                    "{color}{name}: {amt}/{storage} {surplus}\n",
+                    color = self.get_color(prev, id),
+                    name = rss.get(id),
+                    amt = self.get_curr(id),
+                    storage = self.get_cap_fmt(id),
+                    surplus = self.get_surplus_fmt(prev, id)
+                ));
             }
         }
-        if !flag {
-            //If no resources were displayed
-            x.push_str("N/A"); //N/A
-        } else {
-            x.pop(); //Removes a comma
+
+        res
+    }
+    pub fn get_color(&self, prev: &Resources, id: ResourceID) -> &str {
+        match self.get_curr(id).cmp(&prev.get_curr(id)) {
+            Ordering::Less => ansi::RED,
+            Ordering::Equal => ansi::YELLOW,
+            Ordering::Greater => ansi::GREEN,
         }
-        x.push('\n'); //newline character
-        x.push_str(ansi::RESET); //Resets our ansi
-        x //Returns the string
+    }
+
+    pub fn get_cap_fmt(&self, id: ResourceID) -> String {
+        let v = self.cap[id.get()];
+        if v == u64::MAX {
+            "MAX".to_string()
+        } else {
+            v.to_string()
+        }
+    } //Gets the current storage of this resource
+    pub fn get_surplus_fmt(&self, prev: &Resources, id: ResourceID) -> String {
+        let value = i128::from(self.get_curr(id)) - i128::from(prev.get_curr(id));
+        match value.cmp(&0) {
+            Ordering::Equal => "".to_string(),
+            Ordering::Greater => format!("(+{})", value),
+            Ordering::Less => format!("({})", value),
+        }
+    }
+    pub fn should_display(&self, prev: &Resources, id: ResourceID) -> bool {
+        self.get_curr(id) != 0 || self.get_surplus(id) != 0 || prev.get_curr(id) != 0 || prev.get_surplus(id) != 0
     }
     pub fn change_amt(&mut self, id: ResourceID, new_amt: u64) {
         self.curr[id.get()] = new_amt;
@@ -347,8 +314,8 @@ impl ResourceDict {
         )
     }
 }
-pub fn display_vec_one(rss: &ResourceDict, amts: &Vec<u64>, sep: &str) -> String {
-    let mut res = "".to_string(); //Initializes result
+pub fn display_vec_one(rss: &ResourceDict, amts: &[u64], sep: &str) -> String {
+    let mut res = String::new(); //Initializes result
     for (i, item) in amts.iter().enumerate() {
         if *item == 0 {
             continue;

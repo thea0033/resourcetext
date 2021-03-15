@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 use crate::object::*;
 use crate::systems::object_id::*;
 use crate::systems::system_id::*;
-use crate::{component::Components, instr::Directions, location::Location, resources::ResourceDict, system::*};
+use crate::{component::ComponentDict, instr::directions::Directions, location::Location, resources::ResourceDict, system::*};
 #[derive(Serialize, Deserialize)]
 pub struct Systems {
     systems: Vec<System>,
@@ -31,7 +31,9 @@ impl Systems {
         self.systems.push(System::new(name.clone(), loc));
         self.sys_names.push(name);
     } //Adds a system to the list
-    pub fn add_object(&mut self, rss: &ResourceDict, cmp: &Components, dir: &mut Directions, name: String, loc: Location, sys: SystemID) -> ObjectID {
+    pub fn add_object(
+        &mut self, rss: &ResourceDict, cmp: &ComponentDict, dir: &mut Directions, name: String, loc: Location, sys: SystemID,
+    ) -> ObjectID {
         let obj = Object::new(rss, cmp, name.clone(), loc, sys); //Makes a new object
         self.objects.push(obj); //Adds the object to the list
         self.obj_names.push(name); //Adds its name to the list
@@ -72,7 +74,7 @@ impl Systems {
     pub fn get_objects_system(&self, obj: ObjectID) -> SystemID {
         self.obj_systems[obj.get()]
     } //Gets the system the object is contained
-    pub fn get_objects(&self, ids: &Vec<ObjectID>) -> Vec<&Object> {
+    pub fn get_objects(&self, ids: &[ObjectID]) -> Vec<&Object> {
         let mut res: Vec<&Object> = Vec::new();
         for id in ids {
             res.push(&self.objects[id.get()]);
@@ -82,15 +84,10 @@ impl Systems {
     pub fn get_object_names(&self) -> &Vec<String> {
         &self.obj_names
     } //Gets all of the object names
-    pub fn display(&self) -> String {
-        let mut result: String = "".to_string();
+    pub fn display(&self) -> Vec<String> {
+        let mut result: Vec<String> = Vec::new();
         for i in 0..self.sys_names.len() {
-            result.push_str(&format!(
-                "{}{}. {}\n",
-                self.get_system(SystemID::new(i)).color(self),
-                i,
-                self.sys_names[i]
-            ));
+            result.push(format!("{}{}\n", self.get_system(SystemID::new(i)).color(self), self.sys_names[i]));
         }
         result
     } //Displays the systems

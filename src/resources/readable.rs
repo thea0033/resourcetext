@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, io::stdin};
 
 use crate::{extra_bits::to_result, merge::Merge};
 
@@ -60,8 +60,18 @@ impl ReadableResourceDict {
                 }
                 None => None,
             },
-            requirements: requirements,
+            requirements,
         })
+    }
+}
+impl Merge for ReadableResourceDict {
+    fn merge(&mut self, other: Self) {
+        self.resources.merge(other.resources);
+        self.growth.merge(other.growth);
+        self.requirements.merge(other.requirements);
+        if let Some(val) = other.transfer_resource {
+            self.transfer_resource = Some(val);
+        }
     }
 }
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]

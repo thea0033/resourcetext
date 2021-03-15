@@ -2,29 +2,31 @@ use serde_json::map::Map;
 use serde_json::Value;
 use std::fs::File;
 
-/// A package that contains public fields.
-/// It is constructed at the start of the game and removed at the end of it.
-pub struct Package {
-    pub rss: ResourceDict,
-    pub cmp: Components,
-    pub sys: Systems,
-    pub dir: Directions,
-}
-impl Package {
-    pub fn new(rss: ResourceDict, cmp: Components, sys: Systems, dir: Directions) -> Package {
-        Package { rss, cmp, sys, dir }
-    }
-}
+pub mod readable;
+
 use crate::{
-    component::Components,
+    component::ComponentDict,
     constants,
     file::{self, read_basic},
-    instr::Directions,
+    instr::directions::Directions,
     resources::{readable::ReadableResourceDict, ResourceDict},
     systems::Systems,
     ui::io::input::get_raw,
 };
-pub fn save_game(path: &str, rss: &ResourceDict, cmp: &Components, sys: &Systems, dir: &Directions) -> bool {
+/// A package that contains public fields.
+/// It is constructed at the start of the game and removed at the end of it.
+pub struct Package {
+    pub rss: ResourceDict,
+    pub cmp: ComponentDict,
+    pub sys: Systems,
+    pub dir: Directions,
+}
+impl Package {
+    pub fn new(rss: ResourceDict, cmp: ComponentDict, sys: Systems, dir: Directions) -> Package {
+        Package { rss, cmp, sys, dir }
+    }
+}
+pub fn save_game(path: &str, rss: &ResourceDict, cmp: &ComponentDict, sys: &Systems, dir: &Directions) -> bool {
     if File::open(path).is_ok() && !get_raw::<bool>("Are you sure you want to overwrite this file?") {
         println!("Save failed: aborted");
         return false;
@@ -92,8 +94,8 @@ pub fn load(path: &str) -> Result<Package, String> {
         },
         None => return Err("Can't find resources!".to_string()),
     };
-    let cmp: Components = match parsed.get(constants::COMPONENTS) {
-        Some(val) => match serde_json::from_value::<Components>(val.clone()) {
+    let cmp: ComponentDict = match parsed.get(constants::COMPONENTS) {
+        Some(val) => match serde_json::from_value::<ComponentDict>(val.clone()) {
             Ok(val) => val,
             Err(val) => return Err(format!("{:?}", val)),
         },

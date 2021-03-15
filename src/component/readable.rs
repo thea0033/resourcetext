@@ -1,18 +1,21 @@
 use std::collections::HashMap;
 
-use crate::resources::{ResourceDict, ResourceID};
+use crate::{
+    merge::Merge,
+    resources::{ResourceDict, ResourceID},
+};
 
-use super::{recipe::Recipe, Component, Components};
+use super::{recipe::Recipe, Component, ComponentDict};
 
 #[derive(serde::Serialize, serde::Deserialize)]
-pub struct ReadableComponents {
+pub struct ReadableComponentDict {
     accessible: HashMap<String, ReadableComponent>,
     hidden: HashMap<String, ReadableComponent>,
     recipes: HashMap<String, ReadableRecipe>,
 }
-impl ReadableComponents {
-    pub fn convert(self, rss: &ResourceDict) -> Option<Components> {
-        let mut cmp: Components = Components::new();
+impl ReadableComponentDict {
+    pub fn convert(self, rss: &ResourceDict) -> Option<ComponentDict> {
+        let mut cmp: ComponentDict = ComponentDict::new();
         let mut names: Vec<String> = Vec::new();
         let mut buffer: Vec<Component> = Vec::new();
         for (i, line) in self.accessible {
@@ -37,8 +40,15 @@ impl ReadableComponents {
         Some(cmp)
     }
 }
-impl Components {
-    pub fn into_readable(self, rss: &ResourceDict) -> ReadableComponents {
+impl Merge for ReadableComponentDict {
+    fn merge(&mut self, other: Self) {
+        self.accessible.merge(other.accessible);
+        self.recipes.merge(other.recipes);
+        self.hidden.merge(other.hidden);
+    }
+}
+impl ComponentDict {
+    pub fn into_readable(self, rss: &ResourceDict) -> ReadableComponentDict {
         let mut accessible: HashMap<String, ReadableComponent> = HashMap::new();
         let mut hidden: HashMap<String, ReadableComponent> = HashMap::new();
         let mut recipes: HashMap<String, ReadableRecipe> = HashMap::new();
@@ -51,7 +61,7 @@ impl Components {
         for (line, name) in self.recipe_list.into_iter().zip(self.recipe_names.into_iter()) {
             recipes.insert(name, line.to_readable(rss));
         }
-        ReadableComponents { accessible, hidden, recipes }
+        ReadableComponentDict { accessible, hidden, recipes }
     }
 }
 #[derive(serde::Serialize, serde::Deserialize)]
@@ -74,6 +84,13 @@ impl ReadableComponent {
         }
         Some(res)
     }
+}
+impl Merge for ReadableComponent {
+    fn merge(&mut self, other: Self) {
+        self.surplus = other.surplus;
+        self.storage = other.storage;
+        self.cost = other.cost;
+    } // overwrites
 }
 impl Component {
     pub fn to_readable(&self, rss: &ResourceDict) -> ReadableComponent {
@@ -109,6 +126,11 @@ impl ReadableRecipe {
             res.cost()[rss.find(&id)?.get()] = *line;
         }
         Some(res)
+    }
+}
+impl Merge for ReadableRecipe {
+    fn merge(&mut self, other: Self) {
+        self.cost = other.cost;
     }
 }
 impl Recipe {

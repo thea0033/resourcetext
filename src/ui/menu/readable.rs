@@ -14,12 +14,13 @@ impl ReadableKeys {
         Keys::create(vec1, vec2)
     }
 }
+type ReadableContextContents = Vec<(String, Vec<(String, Option<String>)>)>;
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct ReadableContext {
-    context: Vec<(String, Vec<(String, Option<String>)>)>,
+    context: ReadableContextContents,
 }
 impl ReadableContext {
-    pub fn get(self) -> Vec<(String, Vec<(String, Option<String>)>)> {
+    pub fn get(self) -> ReadableContextContents {
         self.context
     }
 }

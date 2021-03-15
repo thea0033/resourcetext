@@ -1,4 +1,3 @@
-pub mod file_object;
 use crate::ui::io::ansi;
 use crate::ui::io::input::get_str_raw;
 use io::BufReader;
@@ -34,7 +33,7 @@ where
     let mut reader = BufReader::new(file);
     let mut result: Vec<String> = Vec::new();
     loop {
-        let mut s: String = "".to_string();
+        let mut s: String = String::new();
         let line = reader.read_line(&mut s);
         result.push(s.clone());
         if line.is_err() {

@@ -28,4 +28,32 @@ impl Keys {
     pub fn key(&self, i: usize) -> char {
         self.keys[i]
     }
+    pub fn set(&mut self, i: usize, new: char) {
+        self.keys[i] = new;
+    }
+    pub fn set_visible(&mut self, i: usize, new: bool) {
+        self.visible[i] = new;
+    }
+    pub fn test(&mut self, pos: usize, new: char) -> bool {
+        for (i, line) in self.keys.iter().enumerate() {
+            if pos != i && new == *line {
+                return false;
+            }
+        }
+        return true;
+    }
+    pub fn find_duplicate(&mut self, excl: usize) -> Option<usize> {
+        for (i, line) in self.keys.iter().enumerate() {
+            if excl != i && self.keys[excl] == *line {
+                return Some(i);
+            }
+        }
+        None
+    }
+}
+pub fn is_yes(v: char) -> bool {
+    v == 'y' || v == 'Y'
+}
+pub fn is_no(v: char) -> bool {
+    v == 'n' || v == 'N'
 }

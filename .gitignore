@@ -1,2 +1,5 @@
 target
 .vscode
+rust-code-analysis-cli.exe
+rust-code-analysis-web.exe
+*~

@@ -1,9 +1,9 @@
+use crate::component::ComponentDict;
 use crate::component::ComponentID;
-use crate::component::Components;
 use crate::{component::RecipeID, object::Object, resources::ResourceID, ui::io::ansi};
 
 impl Object {
-    pub fn install_components(&mut self, id: ComponentID, cmp: &Components, amt: usize) -> usize {
+    pub fn install_components(&mut self, id: ComponentID, cmp: &ComponentDict, amt: usize) -> usize {
         let component = cmp.get(id); //Gets component
         if !self.resources.spend(&component.cost().iter().map(|x| x * (amt as i64)).collect()) {
             //Attempts to spend all resources at once. If this fails...
@@ -37,7 +37,7 @@ impl Object {
         }
         amt //We did all of the installations!
     }
-    pub fn do_recipes(&mut self, id: RecipeID, cmp: &Components, amt: usize) -> usize {
+    pub fn do_recipes(&mut self, id: RecipeID, cmp: &ComponentDict, amt: usize) -> usize {
         let recipe = cmp.get_r(id);
         if !self.resources.spend(&recipe.cost_stat().iter().map(|x| x * (amt as i64)).collect()) {
             //Attempts to perform all of the recipes at once. If that fails...
@@ -52,7 +52,7 @@ impl Object {
         }
         amt
     }
-    pub fn force_install_components(&mut self, id: ComponentID, cmp: &Components, amt: u64) {
+    pub fn force_install_components(&mut self, id: ComponentID, cmp: &ComponentDict, amt: u64) {
         self.past = self.resources.clone(); //"backs up" the current resource amount
         let component = cmp.get(id); //Gets component
         self.resources.force_spend(&component.cost().iter().map(|x| x * (amt as i64)).collect()); //Forcefully spends all required resources at once
@@ -66,7 +66,7 @@ impl Object {
             self.component_amounts[id.id()] += 1;
         }
     }
-    pub fn remove_components(&mut self, id: ComponentID, cmp: &Components, amt: usize) -> usize {
+    pub fn remove_components(&mut self, id: ComponentID, cmp: &ComponentDict, amt: usize) -> usize {
         for i in 0..amt {
             let component = cmp.get(id);
             if !self.resources.gain(component.cost())

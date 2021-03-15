@@ -19,7 +19,7 @@ pub struct Object {
     system: SystemID,                //What system the object's in.
 } //The structure for an object. Objects are ships, planets, even projectiles.
 impl Object {
-    pub fn new(rss: &ResourceDict, cmp: &Components, name: String, loc: Location, sys: SystemID) -> Object {
+    pub fn new(rss: &ResourceDict, cmp: &ComponentDict, name: String, loc: Location, sys: SystemID) -> Object {
         Object {
             location: loc,
             resources: Resources::new(rss.len()),
@@ -45,7 +45,7 @@ impl Object {
     pub fn resources_mut(&mut self) -> &mut Resources {
         &mut self.resources
     } //Mutable getter
-    pub fn to_template(&self, cmp: &Components, rss: &ResourceDict, name: String) -> Template {
+    pub fn to_template(&self, cmp: &ComponentDict, rss: &ResourceDict, name: String) -> Template {
         let mut surplus: Vec<i64> = vec![0; rss.len()];
         let mut storage: Vec<u64> = vec![0; rss.len()];
         let mut cost: Vec<i64> = vec![0; rss.len()]; //initializes vectors

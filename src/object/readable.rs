@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::{
-    component::Components,
+    component::ComponentDict,
     location::Location,
     merge::Merge,
     resources::{readable::ReadableResources, ResourceDict},
@@ -20,7 +20,7 @@ pub struct ReadableObject {
 }
 
 impl ReadableObject {
-    pub fn convert(self, rss: &ResourceDict, cmp: &Components, system: SystemID) -> Result<Object, String> {
+    pub fn convert(self, rss: &ResourceDict, cmp: &ComponentDict, system: SystemID) -> Result<Object, String> {
         let mut res = Object::new(rss, cmp, self.name, self.location, system);
         for (name, amount) in self.components {
             res.force_install_components(cmp.get_from_name(&name), cmp, amount);
@@ -28,10 +28,12 @@ impl ReadableObject {
         for (name, amount) in self.hidden_components {
             res.force_install_components(cmp.get_from_name_h(&name), cmp, amount);
         } //Installs hidden components
-        res.resources.add(&self.resources.convert(rss)?); //Adds resources (the total resources at the end is
-                                                          // the amount specified plus the amount from components. )
+        res.resources.add(&self.resources.convert(rss)?);
+        //Adds resources (the total resources at the end is
+        // the amount specified plus the amount from components. )
         Ok(res)
     }
+
     pub fn append(&mut self, other: ReadableObject) {
         self.location = other.location;
         self.resources.merge(other.resources);

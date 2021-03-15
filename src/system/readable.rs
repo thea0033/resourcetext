@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
 use crate::{
-    component::Components,
-    instr::Directions,
+    component::ComponentDict,
+    instr::directions::Directions,
     location::Location,
     merge::Merge,
     object::readable::ReadableObject,
@@ -17,7 +17,7 @@ pub struct ReadableSystem {
 }
 impl ReadableSystem {
     /// Imports the system into the systems object supplied. Assumes that the system has already been created.
-    pub fn convert(self, sys: &mut Systems, id: SystemID, dir: &mut Directions, rss: &ResourceDict, cmp: &Components) -> Result<(), String> {
+    pub fn convert(self, sys: &mut Systems, id: SystemID, dir: &mut Directions, rss: &ResourceDict, cmp: &ComponentDict) -> Result<(), String> {
         sys.get_system_mut(id).move_to(self.location); // Changes location
         for (name, line) in self.objects {
             sys.add_made_object(id, line.convert(rss, cmp, id)?, name, dir);

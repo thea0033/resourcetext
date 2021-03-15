@@ -28,7 +28,7 @@ impl Recipe {
                 }
             }
         }
-        let mut res: String = "".to_string();
+        let mut res: String = String::new();
         let p_len = positives.len();
         let n_len = negatives.len();
         if p_len != 0 {

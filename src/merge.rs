@@ -35,3 +35,8 @@ impl Merge for i64 {
         *self += other;
     }
 }
+impl Merge for f64 {
+    fn merge(&mut self, other: Self) {
+        *self += other;
+    }
+}
