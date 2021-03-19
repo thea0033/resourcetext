@@ -30,7 +30,7 @@ impl System {
     pub fn display(&self, names: &[String], sys: &Systems) -> Vec<String> {
         let mut res: Vec<String> = Vec::new();
         for i in 0..self.objs.len() {
-            res.push(format!("{}{}\n", sys.get_object(self.objs[i]).color(), names[self.objs[i].get()]));
+            res.push(format!("{}{}", sys.get_object(self.objs[i]).color(), names[self.objs[i].get()]));
         }
         res
     } //Basic display function

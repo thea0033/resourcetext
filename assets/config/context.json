@@ -19,7 +19,6 @@
             ["Paste", "Paste"],
             ["Up", "Go up"],
             ["Down", "Go down"],
-            ["Save", "Save the game"],
             ["New", "Create"],
             ["Remove", "Remove"]
         ]],
@@ -42,7 +41,6 @@
             ["Paste", null],
             ["Up", "Go up"],
             ["Down", "Go down"],
-            ["Save", "Save the game"],
             ["New", null],
             ["Remove", null]
         ]],
@@ -65,7 +63,6 @@
             ["Paste", null],
             ["Up", "Go up"],
             ["Down", "Go down"],
-            ["Save", "Save the game"],
             ["New", null],
             ["Remove", null]
         ]],
@@ -88,7 +85,6 @@
             ["Paste", null],
             ["Up", "Go up"],
             ["Down", "Go down"],
-            ["Save", "Save the game"],
             ["New", "install a component"],
             ["Remove", "remove a component"]
         ]],
@@ -111,7 +107,6 @@
             ["Paste", null],
             ["Up", "Go up"],
             ["Down", "Go down"],
-            ["Save", "Save the game"],
             ["New", "Install a component"],
             ["Remove", "Remove a component"]
         ]],
@@ -134,7 +129,6 @@
             ["Paste", null],
             ["Up", "Go up"],
             ["Down", "Go down"],
-            ["Save", null],
             ["New", null],
             ["Remove", null]
         ]],
@@ -157,7 +151,6 @@
             ["Paste", "Paste"], 
             ["Up", "Up"], 
             ["Down", "Down"], 
-            ["Save", "Save"], 
             ["New", "New"], 
             ["Remove", "Remove"] 
         ]]

@@ -21,6 +21,15 @@ impl OptionTable {
             }
         }
         println!();
+        if self.pages > 1 {
+            println!(
+                "Showing options {} to {} (page {} of {})",
+                page * 10 + 1,
+                min((page + 1) * 10, self.numbered.len()),
+                page + 1,
+                self.pages
+            );
+        }
         for i in (page * 10)..min((page + 1) * 10, self.numbered.len()) {
             println!("{}{}. {}{}", ansi::RESET, i % 10, self.numbered[i], ansi::RESET);
         }
@@ -37,5 +46,8 @@ impl OptionTable {
     /// Get a reference to the option table's pages.
     pub fn pages(&self) -> &usize {
         &self.pages
+    }
+    pub fn len(&self) -> usize {
+        self.numbered.len()
     }
 }

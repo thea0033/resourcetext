@@ -9,7 +9,7 @@ use crate::object::*;
 use crate::systems::object_id::*;
 use crate::systems::system_id::*;
 use crate::{component::ComponentDict, instr::directions::Directions, location::Location, resources::ResourceDict, system::*};
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Systems {
     systems: Vec<System>,
     sys_names: Vec<String>,

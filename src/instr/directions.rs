@@ -2,7 +2,7 @@ use crate::systems::object_id::ObjectID;
 
 use super::{instrs::Instrs, quickie::Quickie};
 
-#[derive(serde::Deserialize, serde::Serialize)]
+#[derive(serde::Deserialize, serde::Serialize, Clone)]
 pub struct Directions {
     directions: Vec<Instrs>,
     quick: Vec<Quickie>,

@@ -1,16 +1,19 @@
+pub mod config;
 pub mod constants;
 pub mod context;
 pub mod docs;
+pub mod escape;
 pub mod game;
 pub mod keys;
 pub mod options;
 pub mod readable;
-pub mod config;
+
+use ui::io::input::{get_raw, get_str_raw};
 
 use crate::save::Package;
 use crate::*;
 
-use self::options::OptionTable;
+use self::{config::Config, options::OptionTable};
 use self::{docs::InfoDocs, keys::Keys};
 
 use super::io::input::Buffer;
@@ -46,7 +49,6 @@ pub enum InputResult {
     Paste,
     Up,
     Down,
-    Save,
     New,
     Remove,
 }
@@ -73,9 +75,8 @@ impl InputResult {
             15 => Paste,
             16 => Up,
             17 => Down,
-            18 => Save,
-            19 => New,
-            20 => Remove,
+            18 => New,
+            19 => Remove,
             _ => panic!("This doesn't represent a valid pattern!"),
         }
     }
@@ -91,10 +92,15 @@ pub fn grab_menu_res(options: &OptionTable, config: &mut Config, pkg: &mut Packa
         let id = result as usize;
         match result {
             InputResult::Invalid => {
-                println!("You entered something invalid! ");
-                config.buffer.flush();
+                wait_for_user(config, "You entered a too high value! Press enter to continue: ");
             }
-            _ if id < 10 => return MenuResult::Enter(id + page * 10),
+            _ if id < 10 => {
+                if id + page * 10 < options.len() {
+                    return MenuResult::Enter(id + page * 10);
+                } else {
+                    wait_for_user(config, "You entered something invalid! Press enter to continue: ");
+                }
+            }
             InputResult::Exit => return MenuResult::Exit,
             InputResult::Tick => {
                 pkg.tick();
@@ -145,9 +151,7 @@ pub fn grab_menu_res_restricted(options: &OptionTable, config: &mut Config) -> M
             InputResult::Info => {
                 docs::doc_menu(&InfoDocs::new("assets\\config\\docs.json").doc(), config, "Docs master".to_string());
             }
-            InputResult::Configure => {
-                //do stuff (not implemented yet) TODO: Implement
-            }
+            InputResult::Configure => config.configure_keys(),
             InputResult::Copy => return MenuResult::Copy,
             InputResult::Paste => return MenuResult::Paste,
             InputResult::Up => {
@@ -177,4 +181,9 @@ pub fn sample_menu(config: &mut Config) {
     let options = OptionTable::new(String::new(), n_list, config.context.grab(0));
     let res: MenuResult = grab_menu_res_restricted(&options, config);
     println!("{:?}", res);
+}
+pub fn wait_for_user(config: &mut Config, message: &str) {
+    config.buffer.flush();
+    println!("{}", message);
+    get_str_raw();
 }

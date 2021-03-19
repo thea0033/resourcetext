@@ -18,7 +18,6 @@
         ["Paste", "v", true],
         ["Up", "u", true],
         ["Down", "d", true],
-        ["Save", "s", true],
         ["New", "n", true],
         ["Remove", "r", true]
     ]
