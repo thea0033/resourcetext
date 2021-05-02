@@ -23,10 +23,10 @@ impl ReadableObject {
     pub fn convert(self, rss: &ResourceDict, cmp: &ComponentDict, system: SystemID) -> Result<Object, String> {
         let mut res = Object::new(rss, cmp, self.name, self.location, system);
         for (name, amount) in self.components {
-            res.force_install_components(cmp.get_from_name(&name), cmp, amount);
+            res.force_install_components(cmp.get_from_name(&name), cmp, amount as usize);
         } //Installs components
         for (name, amount) in self.hidden_components {
-            res.force_install_components(cmp.get_from_name_h(&name), cmp, amount);
+            res.force_install_components(cmp.get_from_name_h(&name), cmp, amount as usize);
         } //Installs hidden components
         res.resources.add(&self.resources.convert(rss)?);
         //Adds resources (the total resources at the end is

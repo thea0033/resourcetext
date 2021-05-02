@@ -1,8 +1,4 @@
-use crate::{
-    save::Package,
-    systems::system_id::SystemID,
-    ui::menu::{self, constants::SYSTEMS_CONTEXT},
-};
+use crate::{save::Package, systems::system_id::SystemID, ui::menu::{self, constants::{self, SYSTEMS_CONTEXT}}};
 
 use menu::options::OptionTable;
 use menu::Config;
@@ -43,5 +39,9 @@ impl Package {
     }
     pub fn remove_in_systems(&mut self) {
         unimplemented!()
+    }
+    pub fn select_system(&mut self, config: &mut Config) -> Option<SystemID> {
+        let table:OptionTable = OptionTable::new("Select a system:".to_string(), self.sys.display(), config.context.grab(constants::SELECT));
+        self.generic_select(config, &table, None, |x| SystemID::new(x))
     }
 }

@@ -16,31 +16,31 @@ impl Package {
                 MenuResult::Exit => break,
                 MenuResult::Copy => self.copy_in_object(id),
                 MenuResult::Paste => self.paste_in_object(id),
-                MenuResult::Enter(0) => {}
-                MenuResult::Enter(1) => {}
+                MenuResult::Enter(0) => self.instrs_menu(config, id),
+                MenuResult::Enter(1) => self.perform_recipe(config, id),
                 MenuResult::Enter(2) => {}
-                MenuResult::Enter(_) => {
-                    println!("This shouldn't happen!");
-                }
-                MenuResult::New => self.new_in_object(id),
-                MenuResult::Remove => self.remove_in_object(id),
+                MenuResult::Enter(_) => println!("This shouldn't happen!"),
+                MenuResult::New => self.new_in_object(config, id),
+                MenuResult::Remove => self.remove_in_object(config, id),
             }
         }
     }
     pub fn generate_object_options() -> Vec<String> {
         Package::OBJ_OPTIONS.to_vec().iter().map(|x| x.to_string()).collect()
     }
-    pub fn copy_in_object(&mut self, id: ObjectID) {
+    fn copy_in_object(&mut self, id: ObjectID) {
         unimplemented!()
     }
-    pub fn paste_in_object(&mut self, id: ObjectID) {
+    fn paste_in_object(&mut self, id: ObjectID) {
         unimplemented!()
     }
-    pub fn new_in_object(&mut self, id: ObjectID) {
-        unimplemented!()
+    fn new_in_object(&mut self, config: &mut Config, id: ObjectID) {
+        self.install_components(config, id);
     }
-    pub fn remove_in_object(&mut self, id: ObjectID) {
-        unimplemented!()
+    fn remove_in_object(&mut self, config: &mut Config, id: ObjectID) {
+        self.remove_components(config, id);
     }
-    pub fn transfer(&mut self, id: ObjectID) {}
+    pub fn transfer(&mut self, id: ObjectID) {
+        
+    }
 }

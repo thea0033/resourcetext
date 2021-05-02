@@ -2,7 +2,6 @@ pub mod condition;
 pub mod directions;
 pub mod instrs;
 pub mod queue;
-pub mod quickie;
 use crate::{component::ComponentDict, systems::object_id::ObjectID};
 
 use crate::{
@@ -34,7 +33,20 @@ pub enum Instr {
     End,                                  //Immediately goes to the next instruction.
     Fail,                                 //Fails.
 } //An instruction. Automates the boring parts of this game.
-
+pub const ALL_INSTRS:&[&str] = &[
+    "Move (location): Spends movement to move to a certain location.",
+    "Jump (system): Jumps to another system.",
+    "Transfer (resources, object): Transfers resources to another object when they're in the same location. If not, does MoveTo.",
+    "Grab (resources, object): Grabs resources from another object when they're in the same location. If not, does MoveTo. ",
+    "MoveTo (object): Does jump to the system they other object is in. If they're in the same system, moves to the object.",
+    "If (condition, instr, instr): If a condition is true, does one instr. Otherwise, does the other. ",
+    "All (list of instrs): Does all of the instructions listed until stuck. ",
+    "GoTo (id): Changes the current instruction to this id. ",
+    "PerformRecipe(Recipe, amount): Attempts to perform a certain recipe a certain amount of times.",
+    "Sticky: Is always in progress. Never finishes. Never does anything.",
+    "End: Immediately finishes. ",
+    "Fail: Immediately fails. Will appear in red."
+];
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct InstrID {
     //Instruction identification wrapper, to make it obvious what the usize will refer to.
@@ -64,7 +76,7 @@ impl Instr {
         match self {
             Instr::Move(val) => {
                 //Movement
-                if val.eq(sys.get_object_mut(obj).get_location()) {
+                if val.eq(sys.get_object_mut(obj).get_location_mut()) {
                     //If we're already at the destination...
                     return InstrRes::Success(pos + 1); //We've succeeded! onto
                                                        // the next thing!
@@ -73,9 +85,9 @@ impl Instr {
                 let mass: f64 = sys.get_object_mut(obj).resources().get_curr(rss.find("Mass").unwrap()) as f64; //Mass of the object
                 let distance = movement / mass; //Distance travelled (this is an Aristotelian universe, where force = mass *
                                                 // velocity)
-                sys.get_object_mut(obj).get_location().move_towards(*val, distance); //Moves towards the location
+                sys.get_object_mut(obj).get_location_mut().move_towards(*val, distance); //Moves towards the location
                 sys.get_object_mut(obj).resources_mut().change_amt(rss.find("Movement").unwrap(), 0); //Resets the movement generated to zero
-                if (*sys.get_object_mut(obj).get_location()).eq(val) {
+                if (*sys.get_object_mut(obj).get_location_mut()).eq(val) {
                     //If we got there...
                     return InstrRes::Success(pos + 1); //We've succeeded! Onto
                                                        // the next thing!
@@ -158,7 +170,7 @@ impl Instr {
                     // failure.
                     InstrRes::Success(_) => {} //If we succeeded, continue on.
                 }
-                Instr::Move(*sys.get_object_mut(*val).get_location()).exe(obj, pos, sys, rss, cmp)
+                Instr::Move(*sys.get_object_mut(*val).get_location_mut()).exe(obj, pos, sys, rss, cmp)
                 //We move to the object's location.
             }
             Instr::Transfer(val1, val2) => {
@@ -217,7 +229,8 @@ impl Instr {
                     //If we did all of them...
                     InstrRes::Success(pos + 1) //We've succeeded!
                 } else {
-                    InstrRes::Fail(format!("We only had enough resources to do {} out of {} recipes", amt_success, amt)) //We've failed.
+                    InstrRes::Fail(format!("We only had enough resources to do {} out of {} recipes", amt_success, amt))
+                    //We've failed.
                 }
             }
             Instr::InstallComponent(component, amt) => {
@@ -250,8 +263,8 @@ impl Instr {
             Instr::Move(val) => {
                 format!(
                     "Move from ({}, {}) to ({}, {})",
-                    sys.get_object(obj).get_location_stat().x,
-                    sys.get_object(obj).get_location_stat().y,
+                    sys.get_object(obj).get_location().x,
+                    sys.get_object(obj).get_location().y,
                     val.x,
                     val.y
                 )

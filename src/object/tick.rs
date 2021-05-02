@@ -7,7 +7,7 @@ impl Object {
         self.grow(rss); //Growth
         self.upkeep(rss); //Upkeep
     }
-    pub fn grow(&mut self, rss: &ResourceDict) {
+    fn grow(&mut self, rss: &ResourceDict) {
         for (id, amt) in rss.get_growth() {
             let pops = self.resources.get_curr(*id);
             if pops == 0 {
@@ -19,7 +19,7 @@ impl Object {
             self.resources.change_amt(*id, grown);
         }
     }
-    pub fn upkeep(&mut self, rss: &ResourceDict) -> bool {
+    fn upkeep(&mut self, rss: &ResourceDict) -> bool {
         let mut satisfied: bool = true;
         for (id, map) in rss.get_requirements() {
             for (upkeep_id, upkeep) in map {
@@ -43,7 +43,8 @@ impl Object {
 }
 pub fn rand_round<T, P>(a: f64, mut b: P) -> T
 where
-    P: FnMut(f64) -> T, {
+    P: FnMut(f64) -> T,
+{
     if a % 1.0 > rand::random() {
         b(a.ceil())
     } else {

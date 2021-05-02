@@ -123,7 +123,7 @@ impl ReadableRecipe {
     pub fn convert(&self, rss: &ResourceDict) -> Option<Recipe> {
         let mut res: Recipe = Recipe::new(rss.len());
         for (id, line) in &self.cost {
-            res.cost()[rss.find(&id)?.get()] = *line;
+            res.cost_mut()[rss.find(&id)?.get()] = *line;
         }
         Some(res)
     }

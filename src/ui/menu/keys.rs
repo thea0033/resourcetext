@@ -40,7 +40,7 @@ impl Keys {
                 return false;
             }
         }
-        return true;
+        true
     }
     pub fn find_duplicate(&mut self, excl: usize) -> Option<usize> {
         for (i, line) in self.keys.iter().enumerate() {

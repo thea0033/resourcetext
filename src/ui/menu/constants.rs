@@ -7,3 +7,4 @@ pub const OBJECT_CONTEXT: usize = 4;
 
 pub const ONLY_QUIT: usize = 5;
 pub const DISPLAY_KEYS: usize = 6;
+pub const SELECT: usize = 7;

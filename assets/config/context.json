@@ -153,6 +153,52 @@
             ["Down", "Down"], 
             ["New", "New"], 
             ["Remove", "Remove"] 
+        ]],
+        ["Select", [
+            ["Zero", null],
+            ["One", null],
+            ["Two", null],
+            ["Three", null],
+            ["Four", null],
+            ["Five", null],
+            ["Six", null],
+            ["Seven", null],
+            ["Eight", null],
+            ["Nine", null],
+            ["Exit", "Exit"],
+            ["Tick", null],
+            ["Info", null],
+            ["Configure", null],
+            ["Copy", null],
+            ["Paste", "Paste"],
+            ["Up", "Go up"],
+            ["Down", "Go down"],
+            ["New", null],
+            ["Remove", null]
+
+        ]],
+        ["start", [
+            ["Zero", null],
+            ["One", null],
+            ["Two", null],
+            ["Three", null],
+            ["Four", null],
+            ["Five", null],
+            ["Six", null],
+            ["Seven", null],
+            ["Eight", null],
+            ["Nine", null],
+            ["Exit", "Exit"],
+            ["Tick", null],
+            ["Info", null],
+            ["Configure", "configure input"],
+            ["Copy", null],
+            ["Paste", "Paste"],
+            ["Up", "Go up"],
+            ["Down", "Go down"],
+            ["New", "new/load game"],
+            ["Remove", "save game"]
+
         ]]
     ]
 }

@@ -1,3 +1,5 @@
+use std::usize;
+
 use crate::{
     component::ComponentDict,
     resources::ResourceDict,
@@ -88,15 +90,14 @@ impl Queue {
         }
     } //Returns the color of the queue (used to help the user tell which queues have
       // failed and which haven't)
-    pub fn display(&self, obj: ObjectID, sys: &mut Systems, rss: &ResourceDict, cmp: &ComponentDict) -> String {
-        let mut res = String::new(); //Initializes result
+    pub fn display(&self, obj: ObjectID, sys: &Systems, rss: &ResourceDict, cmp: &ComponentDict) -> Vec<String> {
+        let mut res = Vec::new(); //Initializes result
         for i in 0..self.queue.len() {
-            res.push_str(&format!("{}{}: {}", self.color_instr(i), i, self.queue[i].display(obj, sys, rss, cmp)));
+            let mut temp:String = format!("{}{}: {}", self.color_instr(i), i, self.queue[i].display(obj, sys, rss, cmp));
             if let InstrRes::Fail(val) = &self.last_res {
-                res.push_str(&format!("(FAILED: {})\n", val));
-            } else {
-                res.push('\n');
+                temp.push_str(&format!("(FAILED: {})", val));
             }
+            res.push(temp);
         }
         res
     } //Displays the queue. amt_before allows it to fit neatly
@@ -127,4 +128,14 @@ impl Queue {
     pub fn get(&mut self, pos: usize) -> &mut Instr {
         &mut self.queue[pos]
     } //Returns the instruction at the position given.
+}
+#[derive(Clone, Copy)]
+pub struct QueueID {
+    id:usize
+}
+impl QueueID {
+    pub fn new(id: usize) -> QueueID { QueueID {id}}
+    pub fn id(&self) -> usize {
+        self.id
+    }
 }

@@ -28,7 +28,8 @@ pub fn read_file(path: &str, presets: &FilePresets) -> Vec<String> {
 }
 fn read_lines<P>(filename: P) -> Vec<String>
 where
-    P: AsRef<Path>, {
+    P: AsRef<Path>,
+{
     let file = File::open(filename).unwrap();
     let mut reader = BufReader::new(file);
     let mut result: Vec<String> = Vec::new();
@@ -58,7 +59,8 @@ pub fn ensure_file_exists(path: &str, presets: &FilePresets) {
 }
 pub fn write<T>(file: &File, contents: T)
 where
-    T: ToString, {
+    T: ToString,
+{
     let mut f = BufWriter::new(file);
     f.write_all(contents.to_string().as_bytes()).expect("Unable to write data");
     f.flush().unwrap();

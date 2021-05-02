@@ -10,7 +10,7 @@ use crate::{
 
 use crate::instr::directions::Directions;
 
-pub fn generate_package_orig(path: &str) -> Result<ReadablePackage, serde_json::Error> {
+fn generate_package_orig(path: &str) -> Result<ReadablePackage, serde_json::Error> {
     let rss = rss(path)?;
     let cmp = cmp(path)?;
     let sys = sys(path)?;
@@ -25,7 +25,7 @@ pub fn generate_package(path: Vec<&str>) -> Result<Package, String> {
     }
     convert_package(final_package)
 }
-pub fn convert_package(orig: ReadablePackage) -> Result<Package, String> {
+fn convert_package(orig: ReadablePackage) -> Result<Package, String> {
     let rss = orig
         .rss
         .to_usable()
@@ -38,15 +38,15 @@ pub fn convert_package(orig: ReadablePackage) -> Result<Package, String> {
     let sys = orig.sys.convert(&rss, &cmp, &mut dir)?;
     Ok(Package::new(rss, cmp, sys, dir))
 }
-pub fn sys(path: &str) -> Result<ReadableSystems, serde_json::Error> {
+fn sys(path: &str) -> Result<ReadableSystems, serde_json::Error> {
     let file = format!("{}{}", path, SYSTEMS);
     serde_json::from_str(&read_basic(&file))
 }
-pub fn rss(path: &str) -> Result<ReadableResourceDict, serde_json::Error> {
+fn rss(path: &str) -> Result<ReadableResourceDict, serde_json::Error> {
     let file = format!("{}{}", path, RESOURCES);
     serde_json::from_str(&read_basic(&file))
 }
-pub fn cmp(path: &str) -> Result<ReadableComponentDict, serde_json::Error> {
+fn cmp(path: &str) -> Result<ReadableComponentDict, serde_json::Error> {
     let file = format!("{}{}", path, COMPONENTS);
     serde_json::from_str(&read_basic(&file))
 }

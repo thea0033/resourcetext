@@ -162,6 +162,15 @@
           "Space": 1,
           "Metal": 500
         }
+      },
+      "Test (if seen please remove)": {
+        "surplus": {
+          "Fuel": 2,
+          "Energy": 10,
+          "Water": 10
+        },
+        "storage": {},
+        "cost": {}
       }
     },
     "hidden": {

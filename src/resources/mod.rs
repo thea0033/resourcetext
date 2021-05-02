@@ -153,7 +153,6 @@ impl Resources {
     } //Add the values inputted to storage.
     pub fn add_curr_vec(&mut self, other: &Vec<u64>) {
         for (i, item) in other.iter().enumerate() {
-            println!("Adding {} to {}", self.curr[i], item);
             self.curr[i] += item;
         }
     } //Add the values inputted to current.

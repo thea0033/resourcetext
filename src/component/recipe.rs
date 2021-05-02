@@ -8,10 +8,10 @@ impl Recipe {
     pub fn new(len: usize) -> Recipe {
         Recipe { cost: vec![0; len] }
     }
-    pub fn cost(&mut self) -> &mut Vec<i64> {
+    pub fn cost_mut(&mut self) -> &mut Vec<i64> {
         &mut self.cost
     }
-    pub fn cost_stat(&self) -> &Vec<i64> {
+    pub fn cost(&self) -> &Vec<i64> {
         &self.cost
     }
     pub fn display(&self, rss: &ResourceDict) -> String {

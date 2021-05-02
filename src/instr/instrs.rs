@@ -4,7 +4,7 @@ use crate::{
     systems::{object_id::ObjectID, Systems},
 };
 
-use super::queue::{Queue, QueueRes};
+use super::queue::{Queue, QueueID, QueueRes};
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Instrs {
@@ -30,7 +30,7 @@ impl Instrs {
             i -= 1;
             if will_remove[i] {
                 //If marked for removal...
-                self.rmv(i); //Removes the queue.
+                self.rmv(QueueID::new(i)); //Removes the queue.
             }
         }
     }
@@ -40,32 +40,39 @@ impl Instrs {
             names: Vec::new(),
         }
     }
+    pub fn insert(&mut self, pos: QueueID, queue: Queue, name: String) {
+        self.instrs.insert(pos.id(), queue);
+        self.names.insert(pos.id(), name);
+    } //Adds a queue and name
     pub fn add(&mut self, queue: Queue, name: String) {
         self.instrs.push(queue);
         self.names.push(name);
-    } //Adds a queue and name
-    pub fn rmv(&mut self, index: usize) {
-        self.instrs.remove(index);
-        self.names.remove(index);
+    }
+    pub fn rmv(&mut self, index: QueueID) {
+        self.instrs.remove(index.id());
+        self.names.remove(index.id());
     } //Removes a queue and name
-    pub fn get_queue(&mut self, id: usize) -> &mut Queue {
-        &mut self.instrs[id]
+    pub fn queue_mut(&mut self, id: QueueID) -> &mut Queue {
+        &mut self.instrs[id.id()]
     } //Gets the queue based on the position
-    pub fn get_queues(&self) -> &Vec<Queue> {
+    pub fn queue(&self, id: QueueID) -> &Queue {
+        &self.instrs[id.id()]
+    } //Gets the queue based on the position
+    pub fn queues(&self) -> &Vec<Queue> {
         &self.instrs
     } //Gets the queue based on the position
     pub fn len(&self) -> usize {
         self.instrs.len()
     } //Gets the length.
-    pub fn display(&self) -> String {
-        let mut res = String::new();
+    pub fn display(&self) -> Vec<String> {
+        let mut res = Vec::new();
         for i in 0..self.instrs.len() {
-            res.push_str(&format!("{}{}: {}\n", self.instrs[i].color(), i, self.names[i]));
+            res.push(format!("{}{}\n", self.instrs[i].color(), self.names[i]));
         }
         res
     } //Displays the object.
-    pub fn get_name(&self, id: usize) -> String {
-        self.names[id].clone()
+    pub fn get_name(&self, id: QueueID) -> String {
+        self.names[id.id()].clone()
     } //Gets the name.
     pub fn merge(&mut self, other: &Instrs) {
         for i in 0..other.len() {

@@ -14,7 +14,8 @@ impl ResourceDict {
     } //Basic new function
     pub fn display_filtered_addon<T>(&self, filter: &Vec<bool>, extra_text: &Vec<T>) -> String
     where
-        T: Display, {
+        T: Display,
+    {
         let mut res = String::new();
         let mut i = 0;
         for j in 0..self.names.len() {

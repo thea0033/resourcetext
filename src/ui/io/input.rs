@@ -19,7 +19,8 @@ pub fn refresh() {
 /// Gets a raw string from stdin and parses it into type T.
 pub fn get_raw<T>(err: &str) -> T
 where
-    T: FromStr, {
+    T: FromStr,
+{
     loop {
         if let Ok(val) = get_str_raw().parse::<T>() {
             break val;
@@ -29,7 +30,8 @@ where
 }
 pub fn record<P>(to_record: String, mut w: P) -> String
 where
-    P: FnMut(String) -> String, {
+    P: FnMut(String) -> String,
+{
     w(to_record)
 }
 #[derive(Clone)]
@@ -53,5 +55,26 @@ impl Buffer {
     }
     pub fn new() -> Buffer {
         Buffer { b: VecDeque::new() }
+    }
+
+    pub fn get_flush<T>(&mut self, err: &str) -> T
+    where
+        T: FromStr,
+    {
+        self.flush();
+        get_raw(err)
+    }
+    pub fn get_valid_flush<T, V>(&mut self, err: &str, valid: V) -> T
+    where
+        T: FromStr,
+        V: Fn(&T) -> bool,
+    {
+        loop {
+            let res = self.get_flush(err);
+            if valid(&res) {
+                break res;
+            }
+            println!("{}", err);
+        }
     }
 }

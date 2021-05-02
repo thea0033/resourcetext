@@ -92,25 +92,21 @@ impl ComponentDict {
         self.recipe_list.append(&mut recipe);
         self.recipe_names.append(&mut name);
     } //adds a list of recipes and names to the component dictionary
-    pub fn display(&self) -> String {
-        let mut x: String = String::new();
+    pub fn display(&self) -> Vec<String> {
+        let mut res: Vec<String> = Vec::new();
         for i in 0..self.list.len() {
-            x.push_str(&format!("{}: {}", i, &self.names[i]));
-            x.push('\n'); //separates them by line
+            res.push(self.names[i].to_string());
         }
-        x
+        res
     } //displays the accessible components
-    pub fn display_contained(&self, a: &Vec<usize>) -> String {
-        let mut x: String = String::new();
-        let mut counter: usize = 0;
+    pub fn display_contained(&self, a: &Vec<usize>) -> Vec<String> {
+        let mut res: Vec<String> = Vec::new();
         for (i, item) in a.iter().enumerate() {
             if *item != 0 {
-                x.push_str(&format!("{}: {} ({})", counter, &self.names[i], item));
-                x.push_str(", \n");
-                counter += 1;
+                res.push(format!("{} ({})", &self.names[i], item));
             }
         }
-        x
+        res
     } //displays the accessible components, but filters them based on how many of
       // them there are
     pub fn display_detailed(&self, rss: &ResourceDict) -> String {
@@ -129,22 +125,15 @@ impl ComponentDict {
         x.push_str(&self.list[id.id()].display(rss));
         x
     }
-    pub fn display_r(&self) -> String {
-        let mut x: String = String::new();
-        for i in 0..self.recipe_list.len() {
-            x.push_str(&format!("{}: {}", i, &self.recipe_names[i]));
-            x.push('\n');
-        }
-        x
+    /// Returns the list of all recipes.
+    pub fn display_r(&self) -> Vec<String> {
+        self.recipe_names.clone()
     }
-    pub fn display_contained_r(&self, a: &Vec<usize>) -> String {
-        let mut x: String = String::new();
-        let mut counter: usize = 0;
+    pub fn display_contained_r(&self, a: &Vec<usize>) -> Vec<String> {
+        let mut x: Vec<String> = Vec::new();
         for (i, item) in a.iter().enumerate() {
             if *item != 0 {
-                x.push_str(&format!("{}: {} ({})", counter, &self.recipe_names[i], item));
-                x.push_str(", \n");
-                counter += 1;
+                x.push(format!("{} ({})", &self.recipe_names[i], item));
             }
         }
         x
@@ -216,7 +205,8 @@ impl Component {
     where
         T: PartialOrd,
         T: Copy,
-        T: ToString, {
+        T: ToString,
+    {
         let mut x: String = String::new(); //Initializes rseult
         let mut flag: bool = false;
         for (i, item) in a.iter().enumerate() {

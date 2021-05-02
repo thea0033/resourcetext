@@ -19,6 +19,7 @@ pub struct Object {
     system: SystemID,                //What system the object's in.
 } //The structure for an object. Objects are ships, planets, even projectiles.
 impl Object {
+    /// Creates a new object with no components.
     pub fn new(rss: &ResourceDict, cmp: &ComponentDict, name: String, loc: Location, sys: SystemID) -> Object {
         Object {
             location: loc,
@@ -29,22 +30,28 @@ impl Object {
             name,
             system: sys,
         }
-    } //Basic constructor
-    pub fn get_location(&mut self) -> &mut Location {
+    }
+    /// Gets the location of the object mutably
+    pub fn get_location_mut(&mut self) -> &mut Location {
         &mut self.location
-    } //Basic getter
-    pub fn get_location_stat(&self) -> &Location {
+    }
+    /// Gets the location of the object
+    pub fn get_location(&self) -> &Location {
         &self.location
-    } //Basic getter, immutable
+    }
+    /// Gets the amounts of components currently stored.
     pub fn get_cmp_amts(&self) -> &Vec<usize> {
         &self.component_amounts
-    } //Getter
+    }
+    /// Gets a reference to the resources in an object.
     pub fn resources(&self) -> &Resources {
         &self.resources
-    } //Getter
+    }
+    /// Gets a mutable reference to the resources in an object.
     pub fn resources_mut(&mut self) -> &mut Resources {
         &mut self.resources
-    } //Mutable getter
+    }
+    /// Converts the object to a template.
     pub fn to_template(&self, cmp: &ComponentDict, rss: &ResourceDict, name: String) -> Template {
         let mut surplus: Vec<i64> = vec![0; rss.len()];
         let mut storage: Vec<u64> = vec![0; rss.len()];
@@ -70,7 +77,8 @@ impl Object {
                     flag = false;
                     break;
                 }
-                transfer_cost += (*item as u64) * rss.get_transfer_costs()[i] as u64; //NOTE: The casting is SAFE
+                transfer_cost += (*item as u64) * rss.get_transfer_costs()[i] as u64;
+                //NOTE: The casting is SAFE
             }
         } //Calculates transfer cost based on all negative costs.
         Template::new(
@@ -81,5 +89,12 @@ impl Object {
             cost,
             if flag { Some(transfer_cost) } else { None },
         )
+    }
+    /// Gets the amount of each component you can afford.
+    pub fn can_afford(&self, cmp: &ComponentDict) -> Vec<usize> {
+        cmp.list.iter().map(|x| self.resources().amt_contained(x.cost())).collect()
+    }
+    pub fn can_afford_recipes(&self, cmp: &ComponentDict) -> Vec<usize> {
+        cmp.recipe_list.iter().map(|x| self.resources().amt_contained(x.cost())).collect()
     }
 }

@@ -30,20 +30,20 @@ impl Object {
             self.resources
                 .add_surplus_vec(&component.surplus().iter().map(|x| x * (amt as i64)).collect());
             if id.is_hidden() {
-                self.h_component_amounts[id.id()] += 1;
+                self.h_component_amounts[id.id()] += amt;
             } else {
-                self.component_amounts[id.id()] += 1;
+                self.component_amounts[id.id()] += amt;
             }
         }
         amt //We did all of the installations!
     }
     pub fn do_recipes(&mut self, id: RecipeID, cmp: &ComponentDict, amt: usize) -> usize {
         let recipe = cmp.get_r(id);
-        if !self.resources.spend(&recipe.cost_stat().iter().map(|x| x * (amt as i64)).collect()) {
+        if !self.resources.spend(&recipe.cost().iter().map(|x| x * (amt as i64)).collect()) {
             //Attempts to perform all of the recipes at once. If that fails...
             for i in 0..amt {
                 //Attempts to do them one at a time!
-                if !self.resources.spend(recipe.cost_stat()) {
+                if !self.resources.spend(recipe.cost()) {
                     //Attempts to perform the recipe once, in a loop
                     return i; //If it fails, return the amount of successes
                               // before that.
@@ -52,7 +52,7 @@ impl Object {
         }
         amt
     }
-    pub fn force_install_components(&mut self, id: ComponentID, cmp: &ComponentDict, amt: u64) {
+    pub fn force_install_components(&mut self, id: ComponentID, cmp: &ComponentDict, amt: usize) {
         self.past = self.resources.clone(); //"backs up" the current resource amount
         let component = cmp.get(id); //Gets component
         self.resources.force_spend(&component.cost().iter().map(|x| x * (amt as i64)).collect()); //Forcefully spends all required resources at once
@@ -61,17 +61,17 @@ impl Object {
         self.resources
             .add_surplus_vec(&component.surplus().iter().map(|x| x * (amt as i64)).collect()); //Adds the surplus benefits of the component.
         if id.is_hidden() {
-            self.h_component_amounts[id.id()] += 1;
+            self.h_component_amounts[id.id()] += amt;
         } else {
-            self.component_amounts[id.id()] += 1;
+            self.component_amounts[id.id()] += amt;
         }
     }
     pub fn remove_components(&mut self, id: ComponentID, cmp: &ComponentDict, amt: usize) -> usize {
         for i in 0..amt {
             let component = cmp.get(id);
-            if !self.resources.gain(component.cost())
+            if !self.resources.can_rmv_storage_vec(component.storage())
+                || !self.resources.gain(component.cost())
                 || self.component_amounts[id.id()] == 0
-                || !self.resources.can_rmv_storage_vec(component.storage())
             {
                 //If we can't remove a component (e.g it provides benefits we can't do w/o, or
                 // we don't have any to remove)
