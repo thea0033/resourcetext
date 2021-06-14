@@ -11,7 +11,7 @@ use super::{config::Config, constants::ONLY_QUIT, grab_menu_res, options::Option
 impl Package {
     pub fn save(&self, config: &mut Config) -> Result<(), String> {
         loop {
-            config.buffer.flush();
+            config.buffer.safety();
             let path = get_file("~");
             if let Ok(val) = path {
                 let pkg: SemiReadablePackage = SemiReadablePackage::from(self);
@@ -26,7 +26,7 @@ impl Package {
     }
     pub fn esc_menu(&mut self, config: &mut Config) -> bool {
         loop {
-            config.buffer.flush();
+            config.buffer.safety();
             let table: OptionTable = OptionTable::new(String::new(), Package::get_esc_options(), config.context.grab(ONLY_QUIT));
             match grab_menu_res(&table, config, self) {
                 super::MenuResult::Continue => continue,

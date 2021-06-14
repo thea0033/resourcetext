@@ -17,8 +17,8 @@
             ["Configure", "Configure input"],
             ["Copy", "Copy"],
             ["Paste", "Paste"],
-            ["Up", "Go up"],
-            ["Down", "Go down"],
+            ["Up", null],
+            ["Down", null],
             ["New", "Create"],
             ["Remove", "Remove"]
         ]],
@@ -39,8 +39,8 @@
             ["Configure", "Configure input"],
             ["Copy", null],
             ["Paste", null],
-            ["Up", "Go up"],
-            ["Down", "Go down"],
+            ["Up", null],
+            ["Down", null],
             ["New", null],
             ["Remove", null]
         ]],
@@ -61,8 +61,8 @@
             ["Configure", "Configure input"],
             ["Copy", null],
             ["Paste", null],
-            ["Up", "Go up"],
-            ["Down", "Go down"],
+            ["Up", null],
+            ["Down", null],
             ["New", null],
             ["Remove", null]
         ]],
@@ -83,8 +83,8 @@
             ["Configure", "Configure input"],
             ["Copy", null],
             ["Paste", null],
-            ["Up", "Go up"],
-            ["Down", "Go down"],
+            ["Up", null],
+            ["Down", null],
             ["New", "install a component"],
             ["Remove", "remove a component"]
         ]],
@@ -105,8 +105,8 @@
             ["Configure", "Configure input"],
             ["Copy", null],
             ["Paste", null],
-            ["Up", "Go up"],
-            ["Down", "Go down"],
+            ["Up", null],
+            ["Down", null],
             ["New", "Install a component"],
             ["Remove", "Remove a component"]
         ]],
@@ -127,8 +127,8 @@
             ["Configure", null],
             ["Copy", null],
             ["Paste", null],
-            ["Up", "Go up"],
-            ["Down", "Go down"],
+            ["Up", null],
+            ["Down", null],
             ["New", null],
             ["Remove", null]
         ]],
@@ -171,8 +171,8 @@
             ["Configure", null],
             ["Copy", null],
             ["Paste", "Paste"],
-            ["Up", "Go up"],
-            ["Down", "Go down"],
+            ["Up", null],
+            ["Down", null],
             ["New", null],
             ["Remove", null]
 
@@ -193,12 +193,11 @@
             ["Info", null],
             ["Configure", "configure input"],
             ["Copy", null],
-            ["Paste", "Paste"],
-            ["Up", "Go up"],
-            ["Down", "Go down"],
-            ["New", "new/load game"],
-            ["Remove", "save game"]
-
+            ["Paste", null],
+            ["Up", null],
+            ["Down", null],
+            ["New", "save game"],
+            ["Remove", "new/load game"]
         ]]
     ]
 }

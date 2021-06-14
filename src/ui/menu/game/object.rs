@@ -1,7 +1,7 @@
 use crate::{
     save::Package,
-    systems::object_id::ObjectID,
-    ui::menu::{constants::OBJECT_CONTEXT, grab_menu_res, options::OptionTable, Config, MenuResult},
+    systems::{object_id::ObjectID, system_id::SystemID},
+    ui::menu::{constants::OBJECT, grab_menu_res, options::OptionTable, Config, MenuResult},
 };
 
 impl Package {
@@ -9,7 +9,7 @@ impl Package {
     pub fn object_menu(&mut self, config: &mut Config, id: ObjectID) {
         loop {
             let options: String = self.sys.get_object(id).display_extras(&self.rss, &self.cmp);
-            let table = OptionTable::new(options, Package::generate_object_options(), config.context.grab(OBJECT_CONTEXT));
+            let table = OptionTable::new(options, Package::generate_object_options(), config.context.grab(OBJECT));
             let res: MenuResult = grab_menu_res(&table, config, self);
             match res {
                 MenuResult::Continue => continue,
@@ -40,7 +40,5 @@ impl Package {
     fn remove_in_object(&mut self, config: &mut Config, id: ObjectID) {
         self.remove_components(config, id);
     }
-    pub fn transfer(&mut self, id: ObjectID) {
-        
-    }
+    pub fn transfer(&mut self, id: ObjectID) {}
 }

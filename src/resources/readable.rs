@@ -1,6 +1,6 @@
-use std::{collections::HashMap, io::stdin};
+use std::collections::HashMap;
 
-use crate::{extra_bits::to_result, merge::Merge};
+use crate::merge::Merge;
 
 use super::{ResourceDict, ResourceID, Resources};
 
@@ -95,15 +95,15 @@ impl ReadableResources {
     pub fn convert(&self, rss: &ResourceDict) -> Result<Resources, String> {
         let mut res = Resources::new(rss.len());
         for (name, amt) in &self.current {
-            let id = to_result(rss.find(name), format!("{} is not in the resource dictionary!", name))?;
+            let id = rss.find(name).ok_or_else(|| format!("{} is not in the resource dictionary!", name))?;
             res.change_amt(id, *amt);
         }
         for (name, amt) in &self.storage {
-            let id = to_result(rss.find(name), format!("{} is not in the resource dictionary!", name))?;
+            let id = rss.find(name).ok_or_else(|| format!("{} is not in the resource dictionary!", name))?;
             res.change_cap(id, *amt);
         }
         for (name, amt) in &self.surplus {
-            let id = to_result(rss.find(name), format!("{} is not in the resource dictionary!", name))?;
+            let id = rss.find(name).ok_or_else(|| format!("{} is not in the resource dictionary!", name))?;
             res.change_surplus(id, *amt);
         }
         Ok(res)

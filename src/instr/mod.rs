@@ -2,6 +2,9 @@ pub mod condition;
 pub mod directions;
 pub mod instrs;
 pub mod queue;
+use crate::object::Object;
+use crate::save::Package;
+use crate::ui::menu::config::Config;
 use crate::{component::ComponentDict, systems::object_id::ObjectID};
 
 use crate::{
@@ -12,6 +15,7 @@ use crate::{
 };
 
 use self::condition::Condition;
+use self::queue::QueueID;
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub enum Instr {
@@ -29,11 +33,12 @@ pub enum Instr {
     GoTo(InstrID),                        //Moves to another position on the queue.
     PerformRecipe(RecipeID, usize),       //Performs a recipe a certain number of times.
     InstallComponent(ComponentID, usize), //Installs a component a certain number of times.
+    RemoveComponent(ComponentID, usize),  //Removes a component a certain number of times.
     Sticky,                               //Sticks here, doing nothign forever.
     End,                                  //Immediately goes to the next instruction.
     Fail,                                 //Fails.
 } //An instruction. Automates the boring parts of this game.
-pub const ALL_INSTRS:&[&str] = &[
+pub const ALL_INSTRS: &[&str] = &[
     "Move (location): Spends movement to move to a certain location.",
     "Jump (system): Jumps to another system.",
     "Transfer (resources, object): Transfers resources to another object when they're in the same location. If not, does MoveTo.",
@@ -41,16 +46,47 @@ pub const ALL_INSTRS:&[&str] = &[
     "MoveTo (object): Does jump to the system they other object is in. If they're in the same system, moves to the object.",
     "If (condition, instr, instr): If a condition is true, does one instr. Otherwise, does the other. ",
     "All (list of instrs): Does all of the instructions listed until stuck. ",
-    "GoTo (id): Changes the current instruction to this id. ",
-    "PerformRecipe(Recipe, amount): Attempts to perform a certain recipe a certain amount of times.",
+    "Go to (id): Changes the current instruction to this id. ",
+    "Perform Recipe (Recipe, amount): Attempts to perform a certain recipe a certain amount of times.",
+    "Install Component (Recipe, amount): Attempts to install a certian component a certain amount of times.",
+    "Remove Component (Recipe, amount): Attempts to install a certian component a certain amount of times.",
     "Sticky: Is always in progress. Never finishes. Never does anything.",
     "End: Immediately finishes. ",
-    "Fail: Immediately fails. Will appear in red."
+    "Fail: Immediately fails. Will appear in red.",
 ];
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub fn all_instrs() -> Vec<String> {
+    ALL_INSTRS.iter().map(|x| x.to_string()).collect()
+}
+#[derive(Debug, Clone, Copy, serde::Serialize, serde::Deserialize)]
 pub struct InstrID {
     //Instruction identification wrapper, to make it obvious what the usize will refer to.
     id: usize,
+}
+pub struct InstrLocation {
+    pub obj: ObjectID,
+    pub queue: QueueID,
+    pub id: InstrID,
+    pub all: Vec<InstrID>,
+}
+impl InstrLocation {
+    pub fn new(obj: ObjectID, queue: QueueID, id: InstrID) -> InstrLocation {
+        InstrLocation {
+            obj,
+            queue,
+            id,
+            all: Vec::new(),
+        }
+    }
+    pub fn push(&self, next: InstrID) -> InstrLocation {
+        let mut all = self.all.clone();
+        all.push(next);
+        InstrLocation {
+            obj: self.obj,
+            queue: self.queue,
+            id: self.id,
+            all,
+        }
+    }
 }
 impl InstrID {
     pub fn new(id: usize) -> InstrID {
@@ -246,14 +282,27 @@ impl Instr {
                     )) //We've failed.
                 }
             }
+            Instr::RemoveComponent(component, amt) => {
+                //Installs a component.
+                let amt_success = sys.get_object_mut(obj).remove_components(*component, cmp, *amt); //Installs components, gets amount of successes.
+                if &amt_success == amt {
+                    //If we did all of them...
+                    InstrRes::Success(pos + 1) //We've succeeded!
+                } else {
+                    InstrRes::Fail(format!(
+                        "We only had enough resources to install {} out of {} components",
+                        amt_success, amt
+                    )) //We've failed.
+                }
+            }
         }
     } //Executes instructions.
-    pub fn display(&self, obj: ObjectID, sys: &Systems, rss: &ResourceDict, cmp: &ComponentDict) -> String {
+    pub fn display(&self, obj: ObjectID, pkg: &Package) -> String {
         match self {
             Instr::All(val) => {
                 let mut res: String = "Do all: [".to_string();
                 for line in val {
-                    res.push_str(&line.display(obj, sys, rss, cmp));
+                    res.push_str(&line.display(obj, pkg));
                     res.push_str(", ");
                 }
                 res.pop();
@@ -263,52 +312,277 @@ impl Instr {
             Instr::Move(val) => {
                 format!(
                     "Move from ({}, {}) to ({}, {})",
-                    sys.get_object(obj).get_location().x,
-                    sys.get_object(obj).get_location().y,
+                    pkg.sys.get_object(obj).get_location().x,
+                    pkg.sys.get_object(obj).get_location().y,
                     val.x,
                     val.y
                 )
             }
             Instr::Jump(val) => {
-                format!("Jumping from {} to {}", sys.get_objects_system(obj).get(), val.get())
+                format!("Jumping from {} to {}", pkg.sys.get_objects_system(obj).get(), val.get())
             }
             Instr::Transfer(val1, val2) => {
                 format!(
                     "Transfer {} to {}",
-                    crate::resources::display_vec_one(rss, val1, ", "),
-                    sys.get_object_name(*val2)
+                    crate::resources::display_vec_one(&pkg.rss, val1, ", "),
+                    pkg.sys.get_object_name(*val2)
                 )
             }
             Instr::Grab(val1, val2) => {
                 format!(
                     "Grab {} from {}",
-                    crate::resources::display_vec_one(rss, val1, ", "),
-                    sys.get_object_name(*val2)
+                    crate::resources::display_vec_one(&pkg.rss, val1, ", "),
+                    pkg.sys.get_object_name(*val2)
                 )
             }
             Instr::MoveTo(val) => {
-                format!("Move to {}", sys.get_object_name(*val))
+                format!("Move to {}", pkg.sys.get_object_name(*val))
             }
             Instr::If(val1, val2, val3) => {
                 format!(
                     "If [{}], then [{}] else [{}]",
                     val1.display(),
-                    val2.display(obj, sys, rss, cmp),
-                    val3.display(obj, sys, rss, cmp)
+                    val2.display(obj, pkg),
+                    val3.display(obj, pkg)
                 )
             }
             Instr::GoTo(val) => {
                 format!("Jump to instruction {}", val.get())
             }
             Instr::PerformRecipe(val1, val2) => {
-                format!("Perform recipe {} {} times", cmp.get_r_name(*val1), val2)
+                format!("Perform recipe {} {} times", pkg.cmp.get_r_name(*val1), val2)
             }
             Instr::InstallComponent(val1, val2) => {
-                format!("Installing component {} {} times", cmp.get_name(*val1), val2)
+                format!("Installing component {} {} times", pkg.cmp.get_name(*val1), val2)
+            }
+            Instr::RemoveComponent(val1, val2) => {
+                format!("Removing component {} {} times", pkg.cmp.get_name(*val1), val2)
             }
             Instr::Sticky => "Remain here".to_string(),
             Instr::End => "Advance".to_string(),
             Instr::Fail => "Fail".to_string(),
         }
     } //Displays instructions. Shouls be simple enough.
+
+    pub fn display_options(&self, obj: ObjectID, pkg: &Package) -> Vec<String> {
+        match self {
+            Instr::All(val) => {
+                let mut res: Vec<String> = Vec::new();
+                res.push(format!("Add an instruction to this:"));
+                res.push(format!("Remove an instruction from this:"));
+                for item in val {
+                    res.push(format!("{}", item.display(obj, pkg)));
+                }
+                res
+            }
+            Instr::Move(_) => {
+                let mut res: Vec<String> = Vec::new();
+                res.push(format!("Change destination"));
+                res
+            }
+            Instr::Jump(_) => {
+                let mut res: Vec<String> = Vec::new();
+                res.push(format!("Change system to jump to"));
+                res
+            }
+            Instr::Transfer(_, _) => {
+                let mut res: Vec<String> = Vec::new();
+                res.push(format!("Change resources transferred"));
+                res.push(format!("Change object destination"));
+                res
+            }
+            Instr::Grab(_, _) => {
+                let mut res: Vec<String> = Vec::new();
+                res.push(format!("Change resources grabbed"));
+                res.push(format!("Change object destination"));
+                res
+            }
+            Instr::MoveTo(_) => {
+                let mut res: Vec<String> = Vec::new();
+                res.push(format!("Change object destination"));
+                res
+            }
+            Instr::If(_, _, _) => {
+                let mut res: Vec<String> = Vec::new();
+                res.push(format!("Change condition"));
+                res.push(format!("Change instruction if true"));
+                res.push(format!("Change instruction if false"));
+                res
+            }
+            Instr::GoTo(_) => {
+                let mut res: Vec<String> = Vec::new();
+                res.push(format!("Change id that is went to"));
+                res
+            }
+            Instr::PerformRecipe(_, _) => {
+                let mut res: Vec<String> = Vec::new();
+                res.push(format!("Replace recipe performed"));
+                res.push(format!("Replace amount of times recipe is performed"));
+                res
+            }
+            Instr::InstallComponent(_, _) => {
+                let mut res: Vec<String> = Vec::new();
+                res.push(format!("Replace component installed"));
+                res.push(format!("Replace amount of times component is installed"));
+                res
+            }
+            Instr::RemoveComponent(_, _) => {
+                let mut res: Vec<String> = Vec::new();
+                res.push(format!("Replace component removed"));
+                res.push(format!("Replace amount of times component is removed"));
+                res
+            }
+            Instr::Sticky => Vec::new(),
+            Instr::End => Vec::new(),
+            Instr::Fail => Vec::new(),
+        }
+    } //Displays instruction options based on instruction
+}
+pub fn parse_options(input: usize, pkg: &mut Package, config: &mut Config, loc: InstrLocation) {
+    match pkg.dir.get_from_loc(&loc) {
+        Instr::All(val) => {
+            match input {
+                0 => {
+                    let add_num = config.buffer.get_valid_flush(
+                        "Enter the position where you want to insert your position:",
+                        "Please enter a valid number!",
+                        |x| *x <= val.len(),
+                    ); //Inserts
+                    let add_val = pkg.new_instr(config); //Gets from input
+                    if let Some(v) = add_val {
+                        if let Instr::All(val) = pkg.dir.get_from_loc_mut(&loc) {
+                            val.insert(add_num, v);
+                        } //Inserts an instruction based on the input
+                    }
+                }
+                1 => {
+                    let rmv_num: usize =
+                        config
+                            .buffer
+                            .get_valid_flush("Enter the position you want to remove:", "Please enter a valid number", |x| {
+                                *x < val.len()
+                            }); //Gets from input
+                    if let Instr::All(val) = pkg.dir.get_from_loc_mut(&loc) {
+                        val.remove(rmv_num); //Removes the instruction
+                    }
+                }
+                _ => {
+                    pkg.instr_menu(config, loc.push(InstrID::new(input)))
+                    //Enters the instruction displayed
+                }
+            }
+        }
+        Instr::Move(_) => {
+            let temp = pkg.select_location(config); //Updates location
+            if let Instr::Move(val) = pkg.dir.get_from_loc_mut(&loc) {
+                *val = temp;
+            }
+        }
+        Instr::Jump(_) => {
+            if let Some(s) = pkg.select_system(config) {
+                if let Instr::Jump(val) = pkg.dir.get_from_loc_mut(&loc) {
+                    *val = s;
+                }
+            }
+        }
+        Instr::Transfer(val, _) => {
+            match input {
+                0 => {
+                    let temp = val.clone();
+                    let temp = pkg.select_resources(config, Some(temp)); //Updates resources to be transferred
+                    if let Instr::Transfer(val, _) = pkg.dir.get_from_loc_mut(&loc) {
+                        *val = temp;
+                    }
+                }
+                1 => {
+                    if let Some(sys) = pkg.select_system(config) {
+                        if let Some(obj) = pkg.select_object(config, sys) {
+                            if let Instr::Transfer(_, val) = pkg.dir.get_from_loc_mut(&loc) {
+                                *val = obj;
+                            }
+                        }
+                    }
+                }
+                _ => {}
+            }
+        }
+        Instr::Grab(val, val2) => {
+            match input {
+                0 => {
+                    let temp = pkg.select_resources(config, Some(*val));
+                    *val =  //Updates resources to be transferred
+                }
+                1 => {
+                    if let Some(val) = pkg.select_system(config) {
+                        if let Some(val) = pkg.select_object(config, val) {
+                            *val2 = val; //Updates object
+                        }
+                    }
+                }
+                _ => {}
+            }
+        }
+        Instr::MoveTo(val) => {
+            if let Some(system) = pkg.select_system(config) {
+                if let Some(obj) = pkg.select_object(config, system) {
+                    *val = obj; //Updates object
+                }
+            }
+        }
+        Instr::If(_, _, _) => {
+            panic!("Not implemented yet!");
+        }
+        Instr::GoTo(val) => {
+            *val = InstrID::new(config.buffer.get_flush("Enter the new position", "Please enter a valid input!"));
+            //Changes the instruction we go to
+        }
+        Instr::PerformRecipe(recipe, amt) => {
+            match input {
+                0 => {
+                    if let Some(val) = pkg.select_recipe(config) {
+                        *recipe = val; //Option 1: Select a new recipe
+                    };
+                }
+                1 => {
+                    *amt = config.buffer.get_flush("Enter the new amount", "Please enter a valid input!");
+                    //Option 2: Select a new
+                    // amount
+                }
+                _ => {}
+            }
+        }
+        Instr::InstallComponent(component, amt) => {
+            match input {
+                0 => {
+                    if let Some(val) = pkg.select_component(config) {
+                        *component = val; //Option 1: select a new component
+                    };
+                }
+                1 => {
+                    *amt = config.buffer.get_flush("Enter the new amount", "Please enter a valid input");
+                    //Option 2: Select a new
+                    // amount
+                }
+                _ => {}
+            }
+        }
+        Instr::RemoveComponent(component, amt) => {
+            match input {
+                0 => {
+                    if let Some(val) = pkg.select_component(config) {
+                        *component = val; //Option 1: select a new component
+                    };
+                }
+                1 => {
+                    *amt = config.buffer.get_flush("Enter the new amount", "Please enter a valid input!");
+                    //Option 2: Select a new
+                    // amount
+                }
+                _ => {}
+            }
+        }
+        Instr::Sticky => {} //No extra options
+        Instr::End => {}    //No extra options
+        Instr::Fail => {}   //No extra options
+    }
 }

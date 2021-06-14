@@ -2,6 +2,7 @@ use ui::menu::keys::{is_no, is_yes};
 
 use crate::ui::io::input::Buffer;
 
+use super::constants::SEP;
 use super::grab_menu_res_restricted;
 use super::{context::Context, keys::Keys, options::OptionTable, MenuResult};
 use crate::*;
@@ -13,16 +14,17 @@ pub struct Config {
 }
 impl Config {
     pub fn new(p: String) -> Result<Self, serde_json::Error> {
+        let keys = Keys::new(&(p.clone() + "keys.json"))?;
         Ok(Self {
-            buffer: Buffer::new(),
-            keys: Keys::new(&(p.clone() + "keys.json"))?,
+            buffer: Buffer::new(SEP),
+            keys,
             context: Context::new(&(p + "context.json"))?,
         })
     }
     pub const OTHERS: &'static str = "Select a key to modify it or press q to quit.";
     pub fn configure_keys(&mut self) {
         loop {
-            self.buffer.flush();
+            self.buffer.safety();
             let others = Config::OTHERS.to_string();
             let numbered: Vec<String> = self.grab_key_list();
             let table: OptionTable = OptionTable::new(others, numbered, self.context.grab(crate::ui::menu::constants::ONLY_QUIT));
@@ -31,7 +33,7 @@ impl Config {
                 MenuResult::Enter(val) => self.configure_key_checked(val),
                 _ => {
                     println!("Invalid input!");
-                    self.buffer.flush();
+                    self.buffer.safety();
                 }
             }
         }

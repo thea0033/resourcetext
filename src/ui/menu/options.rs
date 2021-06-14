@@ -1,6 +1,6 @@
 use std::cmp::min;
 
-use super::keys::Keys;
+use super::{keys::Keys, InputResult};
 
 use crate::ui::io::ansi;
 
@@ -29,6 +29,12 @@ impl OptionTable {
                 page + 1,
                 self.pages
             );
+            if k.visible(InputResult::Up as usize) {
+                println!("{}. Go up", k.key(InputResult::Up as usize));
+            }
+            if k.visible(InputResult::Down as usize) {
+                println!("{}. Go down", k.key(InputResult::Down as usize));
+            }
         }
         for i in (page * 10)..min((page + 1) * 10, self.numbered.len()) {
             println!("{}{}. {}{}", ansi::RESET, i % 10, self.numbered[i], ansi::RESET);

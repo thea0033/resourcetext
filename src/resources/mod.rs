@@ -282,6 +282,9 @@ pub struct ResourceDict {
     //Growth:
 } //Resource dictionary; contains helpful informations
 impl ResourceDict {
+    pub fn display(&self) -> Vec<String> {
+        self.names.clone()
+    }
     pub fn to_readable(&self) -> ReadableResourceDict {
         let temp = self.growth.iter();
         let mut growth: HashMap<String, f64> = HashMap::new();

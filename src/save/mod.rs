@@ -26,8 +26,8 @@ impl Package {
         Package { rss, cmp, sys, dir }
     }
 }
-pub fn save_game(path: &str, rss: &ResourceDict, cmp: &ComponentDict, sys: &Systems, dir: &Directions) -> bool {
-    if File::open(path).is_ok() && !get_raw::<bool>("Are you sure you want to overwrite this file?") {
+pub fn save_game(path: String, rss: &ResourceDict, cmp: &ComponentDict, sys: &Systems, dir: &Directions) -> bool {
+    if File::open(path.clone()).is_ok() && !get_raw::<bool>("Are you sure you want to overwrite this file?") {
         println!("Save failed: aborted");
         return false;
     }

@@ -24,7 +24,7 @@ pub fn doc_menu(doc: &InfoDoc, config: &mut Config, name: String) -> MenuResult 
         match doc {
             InfoDoc::Menu(val1, val2) => {
                 let list = val1.clone();
-                let options = OptionTable::new(name.clone(), list, config.context.grab(constants::INFO_CONTEXT));
+                let options = OptionTable::new(name.clone(), list, config.context.grab(constants::INFO));
                 let res: super::MenuResult = super::grab_menu_res_restricted(&options, config);
                 match res {
                     super::MenuResult::Continue => continue,
@@ -40,7 +40,7 @@ pub fn doc_menu(doc: &InfoDoc, config: &mut Config, name: String) -> MenuResult 
                     newname.push('\n');
                     newname.push_str(line);
                 }
-                let options = OptionTable::new(newname, list, config.context.grab(constants::INFO_CONTEXT));
+                let options = OptionTable::new(newname, list, config.context.grab(constants::INFO));
                 let res: super::MenuResult = super::grab_menu_res_restricted(&options, config);
                 if let MenuResult::Exit = res {
                     break MenuResult::Exit;

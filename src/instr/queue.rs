@@ -3,12 +3,13 @@ use std::usize;
 use crate::{
     component::ComponentDict,
     resources::ResourceDict,
+    save::Package,
     systems::{object_id::ObjectID, Systems},
     ui::io::ansi,
 };
 
-use super::Instr;
 use super::InstrRes;
+use super::{Instr, InstrID};
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Queue {
@@ -76,8 +77,8 @@ impl Queue {
             flag: None,
         }
     } //Creates a new queue.
-    pub fn ins(&mut self, instr: Instr, pos: usize) {
-        self.queue.insert(pos, instr);
+    pub fn ins(&mut self, instr: Instr, pos: QueueID) {
+        self.queue.insert(pos.id(), instr);
     } //Adds a new instruction to the queue.
     pub fn rmv(&mut self, pos: usize) {
         self.queue.remove(pos);
@@ -90,10 +91,10 @@ impl Queue {
         }
     } //Returns the color of the queue (used to help the user tell which queues have
       // failed and which haven't)
-    pub fn display(&self, obj: ObjectID, sys: &Systems, rss: &ResourceDict, cmp: &ComponentDict) -> Vec<String> {
+    pub fn display(&self, obj: ObjectID, pkg: &Package) -> Vec<String> {
         let mut res = Vec::new(); //Initializes result
         for i in 0..self.queue.len() {
-            let mut temp:String = format!("{}{}: {}", self.color_instr(i), i, self.queue[i].display(obj, sys, rss, cmp));
+            let mut temp: String = format!("{}{}", self.color_instr(i), self.queue[i].display(obj, pkg));
             if let InstrRes::Fail(val) = &self.last_res {
                 temp.push_str(&format!("(FAILED: {})", val));
             }
@@ -125,16 +126,21 @@ impl Queue {
     pub fn len(&self) -> usize {
         self.queue.len()
     } //Returns the queue's length.
-    pub fn get(&mut self, pos: usize) -> &mut Instr {
-        &mut self.queue[pos]
+    pub fn get_mut(&mut self, pos: InstrID) -> &mut Instr {
+        &mut self.queue[pos.get()]
+    } //Returns the instruction at the position given.
+    pub fn get(&self, pos: InstrID) -> &Instr {
+        &self.queue[pos.get()]
     } //Returns the instruction at the position given.
 }
 #[derive(Clone, Copy)]
 pub struct QueueID {
-    id:usize
+    id: usize,
 }
 impl QueueID {
-    pub fn new(id: usize) -> QueueID { QueueID {id}}
+    pub fn new(id: usize) -> QueueID {
+        QueueID { id }
+    }
     pub fn id(&self) -> usize {
         self.id
     }

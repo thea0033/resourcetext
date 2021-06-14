@@ -1,11 +1,14 @@
-use crate::ui::menu::{constants, grab_menu_res, options::OptionTable, MenuResult};
+use crate::{
+    systems::object_id::ObjectID,
+    ui::menu::{constants, grab_menu_res, options::OptionTable, MenuResult},
+};
 
 use crate::{save::Package, systems::system_id::SystemID, ui::menu::Config};
 impl Package {
     pub fn system_menu(&mut self, config: &mut Config, id: SystemID) {
         loop {
             let options: Vec<String> = self.sys.get_system(id).display(&self.sys.get_object_names(), &self.sys);
-            let table = OptionTable::new(String::new(), options, config.context.grab(constants::SYSTEM_CONTEXT));
+            let table = OptionTable::new(String::new(), options, config.context.grab(constants::SYSTEM));
             let res: MenuResult = grab_menu_res(&table, config, self);
             match res {
                 MenuResult::Continue => continue,
@@ -20,16 +23,19 @@ impl Package {
             }
         }
     }
-    pub fn copy_in_system(&mut self, id: SystemID) {
+    fn copy_in_system(&mut self, id: SystemID) {
         unimplemented!()
     }
-    pub fn paste_in_system(&mut self, id: SystemID) {
+    fn paste_in_system(&mut self, id: SystemID) {
         unimplemented!()
     }
-    pub fn new_in_system(&mut self, id: SystemID) {
+    fn new_in_system(&mut self, id: SystemID) {
         unimplemented!()
     }
-    pub fn remove_in_system(&mut self, id: SystemID) {
+    fn remove_in_system(&mut self, id: SystemID) {
         unimplemented!()
+    }
+    pub fn select_object(&mut self, config: &mut Config, id: SystemID) -> Option<ObjectID> {
+        todo!()
     }
 }

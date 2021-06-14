@@ -1,7 +1,7 @@
 #![allow(clippy::ptr_arg)]
 #![allow(dead_code)]
 
-use ui::menu::config::Config;
+use ui::menu::{config::Config, game::start_program};
 
 mod component;
 mod constants;
@@ -20,7 +20,6 @@ mod system;
 mod systems;
 mod ui;
 pub fn main() {
-    let mut pkg = init::generate_package(vec!["assets\\base\\"]).unwrap();
     let mut config: Config = Config::new("assets\\config\\".to_string()).unwrap();
-    pkg.systems_menu(&mut config)
+    start_program(&mut config);
 }

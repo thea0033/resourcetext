@@ -1,6 +1,10 @@
-use crate::{save::Package, systems::object_id::ObjectID, ui::menu::{config::Config, constants, options::OptionTable}};
 use crate::component::RecipeID;
 use crate::extra_bits::filter;
+use crate::{
+    save::Package,
+    systems::object_id::ObjectID,
+    ui::menu::{config::Config, constants, options::OptionTable},
+};
 
 impl Package {
     pub fn select_recipes(&mut self, config: &mut Config, max_amounts: Option<Vec<usize>>) -> Option<(RecipeID, usize)> {
@@ -15,20 +19,24 @@ impl Package {
             let id = self.generic_select(config, &options, None, |x| {
                 RecipeID::new(filter(x, &val.iter().map(|x| x != &0).collect()))
             })?;
-            println!("How many recipes do you want to select? (between 0 and {})", val[id.id()]);
-            let amount: usize = config
-                .buffer
-                .get_valid_flush(&format!("Please enter a valid number (between 0 and {}). ", val[id.id()]), |x| {
-                    *x <= val[id.id()]
-                });
+            let amount: usize = config.buffer.get_valid_flush(
+                &format!("How many recipes do you want to select? (between 0 and {})", val[id.id()]),
+                &format!("Please enter a valid number (between 0 and {}). ", val[id.id()]),
+                |x| *x <= val[id.id()],
+            );
             Some((id, amount))
         } else {
             let id = self.generic_select(config, &options, None, RecipeID::new)?;
-            println!("How many recipes do you want to select?");
-            let amount = config.buffer.get_flush("Please enter a valid number. ");
+            let amount = config
+                .buffer
+                .get_flush("How many recipes do you want to select?", "Please enter a valid number. ");
             Some((id, amount))
         }
-        
+    }
+    pub fn select_recipe(&mut self, config: &mut Config) -> Option<RecipeID> {
+        let numbered = self.cmp.display_r();
+        let options: OptionTable = OptionTable::new("Select a recipe".to_string(), numbered, config.context.grab(constants::SELECT));
+        self.generic_select(config, &options, None, RecipeID::new)
     }
     pub fn perform_recipe(&mut self, config: &mut Config, obj: ObjectID) {
         let amts = self.sys.get_object(obj).can_afford_recipes(&self.cmp);

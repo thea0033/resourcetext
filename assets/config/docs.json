@@ -1,22 +1,25 @@
 {
     "contents": {
         "Menu": [[
-            "First",
-            "Second",
-            "Third"
+            "Basic UI navigation",
+            "Configurations",
+            "Instructions"
         ], [
             {
                 "Endpoint": [
-                    "This is the first thing.",
-                    "This is a placeholder.",
-                    "All lines should be displayed"
+                    "The user interface here is composed of text prompts. Enter what you want to do, and then hit enter. ",
+                    "When you're in a menu, you will get a single character prompt. Multiple characters entered here will carry over.",
+                    "For example: qq will send the q command in twice.",
+                    "Some prompts will take variable size - for example, entering a number of recipes to perform. Commands here will be separated by slashes.",
+                    "For example: 44 in this context will be taken as \"44\", but 4/4 will be taken as \"4\" entered twice. ",
+                    "Telling the difference: All of the relevant options that exist will be displayed in a menu. Variable size prompts will be simple prompts."
                 ]
             },
             {
                 "Endpoint": [
-                    "This is the second thing.",
-                    "This is a placeholder.",
-                    "All lines should be displayed"
+                    "You can configure your user interface rather easily, in an albeit limited manner.",
+                    "You can choose new keybindings for each key, and hide some keys once you've figured out what each key means.",
+                    "Note that a single key cannot be 2 functions. If any conflicts exist, you will be forced to resolve them."
                 ]
             },
             {

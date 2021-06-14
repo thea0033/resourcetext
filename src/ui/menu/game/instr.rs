@@ -1,8 +1,23 @@
-use crate::{instr::{InstrID, queue::QueueID}, save::Package, systems::object_id::ObjectID};
-
+use crate::{
+    instr::{parse_options, queue::QueueID, Instr, InstrID, InstrLocation},
+    save::Package,
+    systems::object_id::ObjectID,
+    ui::menu::{config::Config, constants, grab_menu_res, options::OptionTable, MenuResult},
+};
 
 impl Package {
-    pub fn instr_menu(&mut self, obj: ObjectID, queue: QueueID, id: InstrID) {
-        
+    pub fn instr_menu(&mut self, config: &mut Config, loc: InstrLocation) {
+        loop {
+            let others = self.dir.get_from_loc(&loc).display(loc.obj, &self);
+            let numbered = self.dir.get_from_loc(&loc).display_options(loc.obj, &self);
+            let table: OptionTable = OptionTable::new(others, numbered, config.context.grab(constants::DEFAULT)); // change later
+            match grab_menu_res(&table, config, self) {
+                MenuResult::Exit => break,
+                MenuResult::Copy => todo!(),
+                MenuResult::Paste => todo!(),
+                MenuResult::Enter(val) => parse_options(val, &mut self, config, loc),
+                _ => {}
+            }
+        }
     }
 }

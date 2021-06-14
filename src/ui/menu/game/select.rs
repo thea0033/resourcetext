@@ -24,9 +24,4 @@ impl Package {
             }
         }
     }
-    pub fn illegal_state(&self, cfg: &mut Config) {
-        cfg.buffer.flush();
-        println!("Illegal state reached!");
-        cfg.buffer.flush();
-    }
 }

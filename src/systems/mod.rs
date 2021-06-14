@@ -38,7 +38,7 @@ impl Systems {
         self.objects.push(obj); //Adds the object to the list
         self.obj_names.push(name); //Adds its name to the list
         self.obj_systems.push(sys); //Adds its system to the list
-        dir.add_new(); //Adds a new set of directions for the object
+        dir.insert(); //Adds a new set of directions for the object
         let temp = self.objects.len() - 1; //Part 1 of 2
         self.get_system_mut(sys).add_obj(ObjectID::new(temp)); //Marks that the object
                                                                // is inside the correct
@@ -49,7 +49,7 @@ impl Systems {
         self.objects.push(obj);
         self.obj_names.push(name); //Adds its name to the list
         self.obj_systems.push(sys); //Adds its system to the list
-        dir.add_new(); //Adds a new set of directions for the object
+        dir.insert(); //Adds a new set of directions for the object
         let temp = self.objects.len() - 1; //Part 1 of 2
         self.get_system_mut(sys).add_obj(ObjectID::new(temp)); //Marks that the object
     }
