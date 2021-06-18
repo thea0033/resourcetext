@@ -506,26 +506,33 @@ pub fn parse_options(input: usize, pkg: &mut Package, config: &mut Config, loc: 
                 _ => {}
             }
         }
-        Instr::Grab(val, val2) => {
+        Instr::Grab(val, _) => {
             match input {
                 0 => {
-                    let temp = pkg.select_resources(config, Some(*val));
-                    *val =  //Updates resources to be transferred
+                    let temp = Some(val.clone());
+                    let temp = pkg.select_resources(config, temp);
+                    if let Instr::Grab(val, _) = pkg.dir.get_from_loc_mut(&loc) {
+                        *val = temp;
+                    }
                 }
                 1 => {
-                    if let Some(val) = pkg.select_system(config) {
-                        if let Some(val) = pkg.select_object(config, val) {
-                            *val2 = val; //Updates object
+                    if let Some(sys) = pkg.select_system(config) {
+                        if let Some(obj) = pkg.select_object(config, sys) {
+                            if let Instr::Grab(_, val) = pkg.dir.get_from_loc_mut(&loc) {
+                                *val = obj;
+                            }
                         }
                     }
                 }
                 _ => {}
             }
         }
-        Instr::MoveTo(val) => {
-            if let Some(system) = pkg.select_system(config) {
-                if let Some(obj) = pkg.select_object(config, system) {
-                    *val = obj; //Updates object
+        Instr::MoveTo(_) => {
+            if let Some(sys) = pkg.select_system(config) {
+                if let Some(obj) = pkg.select_object(config, sys) {
+                    if let Instr::Grab(_, val) = pkg.dir.get_from_loc_mut(&loc) {
+                        *val = obj;
+                    }
                 }
             }
         }
