@@ -21,5 +21,5 @@ mod systems;
 mod ui;
 pub fn main() {
     let mut config: Config = Config::new("assets\\config\\".to_string()).unwrap();
-    start_program(&mut config);
+    start_program(&mut config).expect("An error occurred!");
 }

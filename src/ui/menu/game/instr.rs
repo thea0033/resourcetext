@@ -15,7 +15,7 @@ impl Package {
                 MenuResult::Exit => break,
                 MenuResult::Copy => todo!(),
                 MenuResult::Paste => todo!(),
-                MenuResult::Enter(val) => parse_options(val, &mut self, config, loc),
+                MenuResult::Enter(val) => parse_options(val, self, config, loc.clone()),
                 _ => {}
             }
         }

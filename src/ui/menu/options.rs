@@ -23,17 +23,18 @@ impl OptionTable {
         println!();
         if self.pages > 1 {
             println!(
-                "Showing options {} to {} (page {} of {})",
+                "Showing options {} to {} of {} (page {} of {})",
                 page * 10 + 1,
                 min((page + 1) * 10, self.numbered.len()),
+                self.numbered.len(),
                 page + 1,
                 self.pages
             );
             if k.visible(InputResult::Up as usize) {
-                println!("{}. Go up", k.key(InputResult::Up as usize));
+                println!("{}. Go to the next page", k.key(InputResult::Up as usize));
             }
             if k.visible(InputResult::Down as usize) {
-                println!("{}. Go down", k.key(InputResult::Down as usize));
+                println!("{}. Go to the previous page", k.key(InputResult::Down as usize));
             }
         }
         for i in (page * 10)..min((page + 1) * 10, self.numbered.len()) {

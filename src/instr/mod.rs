@@ -2,7 +2,6 @@ pub mod condition;
 pub mod directions;
 pub mod instrs;
 pub mod queue;
-use crate::object::Object;
 use crate::save::Package;
 use crate::ui::menu::config::Config;
 use crate::{component::ComponentDict, systems::object_id::ObjectID};
@@ -62,6 +61,7 @@ pub struct InstrID {
     //Instruction identification wrapper, to make it obvious what the usize will refer to.
     id: usize,
 }
+#[derive(Clone)]
 pub struct InstrLocation {
     pub obj: ObjectID,
     pub queue: QueueID,
@@ -539,51 +539,65 @@ pub fn parse_options(input: usize, pkg: &mut Package, config: &mut Config, loc: 
         Instr::If(_, _, _) => {
             panic!("Not implemented yet!");
         }
-        Instr::GoTo(val) => {
-            *val = InstrID::new(config.buffer.get_flush("Enter the new position", "Please enter a valid input!"));
+        Instr::GoTo(_) => {
+            let temp = InstrID::new(config.buffer.get_flush("Enter the new position", "Please enter a valid input!"));
+            if let Instr::GoTo(val) = pkg.dir.get_from_loc_mut(&loc) {
+                *val = temp;
+            }
             //Changes the instruction we go to
         }
-        Instr::PerformRecipe(recipe, amt) => {
+        Instr::PerformRecipe(_, _) => {
             match input {
                 0 => {
-                    if let Some(val) = pkg.select_recipe(config) {
-                        *recipe = val; //Option 1: Select a new recipe
+                    if let Some(temp) = pkg.select_recipe(config) {
+                        if let Instr::PerformRecipe(val, _) = pkg.dir.get_from_loc_mut(&loc) {
+                            *val = temp;
+                        }
                     };
                 }
                 1 => {
-                    *amt = config.buffer.get_flush("Enter the new amount", "Please enter a valid input!");
+                    let temp = config.buffer.get_flush("Enter the new amount", "Please enter a valid input!");
+                    if let Instr::PerformRecipe(_, val) = pkg.dir.get_from_loc_mut(&loc) {
+                        *val = temp;
+                    }
                     //Option 2: Select a new
                     // amount
                 }
                 _ => {}
             }
         }
-        Instr::InstallComponent(component, amt) => {
+        Instr::InstallComponent(_, _) => {
             match input {
                 0 => {
-                    if let Some(val) = pkg.select_component(config) {
-                        *component = val; //Option 1: select a new component
+                    if let Some(temp) = pkg.select_component(config) {
+                        if let Instr::InstallComponent(val, _) = pkg.dir.get_from_loc_mut(&loc) {
+                            *val = temp;
+                        }
                     };
                 }
                 1 => {
-                    *amt = config.buffer.get_flush("Enter the new amount", "Please enter a valid input");
-                    //Option 2: Select a new
-                    // amount
+                    let temp = config.buffer.get_flush("Enter the new amount", "Please enter a valid input");
+                    if let Instr::InstallComponent(_, val) = pkg.dir.get_from_loc_mut(&loc) {
+                        *val = temp;
+                    }
                 }
                 _ => {}
             }
         }
-        Instr::RemoveComponent(component, amt) => {
+        Instr::RemoveComponent(_, _) => {
             match input {
                 0 => {
-                    if let Some(val) = pkg.select_component(config) {
-                        *component = val; //Option 1: select a new component
+                    if let Some(temp) = pkg.select_component(config) {
+                        if let Instr::InstallComponent(val, _) = pkg.dir.get_from_loc_mut(&loc) {
+                            *val = temp;
+                        }
                     };
                 }
                 1 => {
-                    *amt = config.buffer.get_flush("Enter the new amount", "Please enter a valid input!");
-                    //Option 2: Select a new
-                    // amount
+                    let temp = config.buffer.get_flush("Enter the new amount", "Please enter a valid input!");
+                    if let Instr::InstallComponent(_, val) = pkg.dir.get_from_loc_mut(&loc) {
+                        *val = temp;
+                    }
                 }
                 _ => {}
             }
