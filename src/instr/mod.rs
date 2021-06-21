@@ -2,7 +2,6 @@ pub mod condition;
 pub mod directions;
 pub mod instrs;
 pub mod queue;
-use crate::object::Object;
 use crate::save::Package;
 use crate::ui::menu::config::Config;
 use crate::{component::ComponentDict, systems::object_id::ObjectID};
@@ -542,7 +541,6 @@ pub fn parse_options(input: usize, pkg: &mut Package, config: &mut Config, loc: 
         }
         Instr::GoTo(_) => {
             let temp = InstrID::new(config.buffer.get_flush("Enter the new position", "Please enter a valid input!"));
-            
             if let Instr::GoTo(val) = pkg.dir.get_from_loc_mut(&loc) {
                 *val = temp;
             }
@@ -579,7 +577,7 @@ pub fn parse_options(input: usize, pkg: &mut Package, config: &mut Config, loc: 
                 }
                 1 => {
                     let temp = config.buffer.get_flush("Enter the new amount", "Please enter a valid input");
-                    if let Instr::PerformRecipe(_, val) = pkg.dir.get_from_loc_mut(&loc) {
+                    if let Instr::InstallComponent(_, val) = pkg.dir.get_from_loc_mut(&loc) {
                         *val = temp;
                     }
                 }
