@@ -36,6 +36,8 @@ impl Package {
         unimplemented!()
     }
     pub fn select_object(&mut self, config: &mut Config, id: SystemID) -> Option<ObjectID> {
-        todo!()
+        let table: OptionTable = OptionTable::new("Please select an object".to_string(), self.sys.get_object_names_sys(id), config.context.grab(constants::SELECT));
+        let temp = self.generic_select(config, &table, None, |x| x)?;
+        Some(self.sys.get_system(id).get_objs()[temp])
     }
 }

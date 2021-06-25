@@ -1,16 +1,9 @@
-use std::{
-    io::{self, Error, ErrorKind},
-    path::PathBuf,
-};
+use std::{io::{self, Error, ErrorKind}, path::PathBuf, sync::mpsc::channel};
 
-use crate::{
-    init::{self, generate_package},
-    save::{self, load, Package},
-    ui::io::{
+use crate::{init::{self, generate_package}, save::{self, load, Package}, ui::{io::{
         ansi,
         input::{get_raw, get_str_raw, refresh},
-    },
-};
+    }, menu::graphics::loading_screen}};
 
 use super::{config::Config, constants, grab_menu_res, options::OptionTable, MenuResult};
 
@@ -27,6 +20,12 @@ pub mod system;
 pub mod systems;
 pub mod tick;
 pub fn start_program(config: &mut Config) -> io::Result<()> {
+    let (send, recv) = channel();
+    let v = std::thread::spawn(|| loading_screen(recv, 11, 300, 20));
+    for i in 0..=10 {
+        let _ = send.send(Some(i.to_string() + "0%"));
+    }
+    v.join().expect("FAILED");
     println!("Welcome to resourcetext!");
     println!("This is more of an engine than a game. It's designed to be easily modified.");
     println!("For now, I'm assuming you want to play the simple version that comes pre-installed.");

@@ -23,7 +23,14 @@ impl ReadableResourceDict {
             transfer_resource,
         }
     }
-
+    pub fn default() -> Self {
+        Self {
+            resources: Vec::new(),
+            growth: HashMap::new(),
+            requirements: HashMap::new(),
+            transfer_resource: None,
+        }
+    }
     pub fn to_usable(&self) -> Option<ResourceDict> {
         let temp = self.growth.iter();
         let mut growth: HashMap<ResourceID, f64> = HashMap::new();

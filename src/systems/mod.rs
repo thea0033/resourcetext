@@ -84,6 +84,15 @@ impl Systems {
     pub fn get_object_names(&self) -> &Vec<String> {
         &self.obj_names
     } //Gets all of the object names
+    pub fn get_object_names_sys(&self, id: SystemID) -> Vec<String> {
+        let mut result = Vec::new();
+        for (i, item) in self.obj_systems.iter().enumerate() {
+            if *item == id {
+                result.push(self.obj_names[i].clone());
+            }
+        }
+        result
+    } //Gets all of the object names
     pub fn display(&self) -> Vec<String> {
         let mut result: Vec<String> = Vec::new();
         for i in 0..self.sys_names.len() {

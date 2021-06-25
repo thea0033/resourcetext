@@ -39,6 +39,13 @@ impl ReadableComponentDict {
         cmp.add_r_l(names, buffer);
         Some(cmp)
     }
+    pub fn default() -> ReadableComponentDict {
+        ReadableComponentDict {
+            accessible: HashMap::new(),
+            hidden: HashMap::new(),
+            recipes: HashMap::new(),
+        }
+    }
 }
 impl Merge for ReadableComponentDict {
     fn merge(&mut self, other: Self) {
