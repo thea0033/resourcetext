@@ -91,7 +91,6 @@ pub fn get_file(current: &str) -> io::Result<String> {
         println!("Select a file from the current directory by typing it. ");
         println!("Typing a directory (marked in blue) will enter it. ");
         println!("Typing \".\" will exit the current directory if possible. ");
-        println!("Typing a file that doesn't exist may prompt a new file to be created.");
         println!("Files: ");
         let mut folders: Vec<String> = Vec::new();
         let temp = fs::read_dir(&path)?;
