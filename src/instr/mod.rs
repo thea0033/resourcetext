@@ -584,18 +584,18 @@ pub fn parse_options(input: usize, pkg: &mut Package, config: &mut Config, loc: 
                 _ => {}
             }
         }
-        Instr::RemoveComponent(_, _) => {
+        Instr::RemoveComponent(..) => {
             match input {
                 0 => {
                     if let Some(temp) = pkg.select_component(config) {
-                        if let Instr::InstallComponent(val, _) = pkg.dir.get_from_loc_mut(&loc) {
+                        if let Instr::RemoveComponent(val, _) = pkg.dir.get_from_loc_mut(&loc) {
                             *val = temp;
                         }
                     };
                 }
                 1 => {
                     let temp = config.buffer.get_flush("Enter the new amount", "Please enter a valid input!");
-                    if let Instr::InstallComponent(_, val) = pkg.dir.get_from_loc_mut(&loc) {
+                    if let Instr::RemoveComponent(_, val) = pkg.dir.get_from_loc_mut(&loc) {
                         *val = temp;
                     }
                 }

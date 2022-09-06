@@ -1,0 +1,101 @@
+{
+  "resources": [
+    {
+      "name": "Energy",
+      "transfer_cost": 0
+    },
+    {
+      "name": "Water",
+      "transfer_cost": 1
+    },
+    {
+      "name": "Air",
+      "transfer_cost": 1
+    },
+    {
+      "name": "Ore",
+      "transfer_cost": 1
+    },
+    {
+      "name": "Uranium",
+      "transfer_cost": 4
+    },
+    {
+      "name": "Biomass",
+      "transfer_cost": 5
+    },
+    {
+      "name": "Food",
+      "transfer_cost": 1
+    },
+    {
+      "name": "Metal",
+      "transfer_cost": 1
+    },
+    {
+      "name": "Population",
+      "transfer_cost": 10
+    },
+    {
+      "name": "Luxuries",
+      "transfer_cost": 1
+    },
+    {
+      "name": "Production",
+      "transfer_cost": 1
+    },
+    {
+      "name": "Transfer",
+      "transfer_cost": 0
+    },
+    {
+      "name": "Fuel",
+      "transfer_cost": 1
+    },
+    {
+      "name": "Movement",
+      "transfer_cost": 18446744073709551615
+    },
+    {
+      "name": "Space",
+      "transfer_cost": 18446744073709551615
+    },
+    {
+      "name": "Living Space",
+      "transfer_cost": 18446744073709551615
+    },
+    {
+      "name": "Mass",
+      "transfer_cost": 18446744073709551615
+    },
+    {
+      "name": "Mining Jobs",
+      "transfer_cost": 18446744073709551615
+    },
+    {
+      "name": "Uranium Mining Jobs",
+      "transfer_cost": 18446744073709551615
+    },
+    {
+      "name": "Factory Jobs",
+      "transfer_cost": 18446744073709551615
+    }
+  ],
+  "growth": {
+    "Population": 0.1,
+    "Biomass": 0.1
+  },
+  "requirements": {
+    "Biomass": {
+      "Water": 0.1,
+      "Air": -0.1
+    },
+    "Population": {
+      "Production": -1.0,
+      "Air": 1.0,
+      "Food": 1.0,
+      "Water": 1.0
+    }
+  },
+  "transfer_resource": "Transfer"
+}

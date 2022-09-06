@@ -7,6 +7,7 @@ pub mod game;
 pub mod keys;
 pub mod options;
 pub mod readable;
+pub mod graphics;
 
 use ui::io::input::{get_raw, get_str_raw};
 

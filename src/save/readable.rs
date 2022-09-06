@@ -17,6 +17,13 @@ impl ReadablePackage {
     pub fn new(rss: ReadableResourceDict, cmp: ReadableComponentDict, sys: ReadableSystems) -> Self {
         Self { rss, cmp, sys }
     }
+    pub fn default() -> Self {
+        Self {
+            rss:ReadableResourceDict::default(),
+            cmp: ReadableComponentDict::default(),
+            sys: ReadableSystems::default(),
+        }
+    }
 }
 impl Merge for ReadablePackage {
     fn merge(&mut self, other: Self) {

@@ -1,3 +1,20 @@
-TODO: Implement conditions. 
-TODO: Replace files accessible.rs w/ resource files
-TODO: Add clipboard
+TODO: Implement conditions
+TODO: Add a clipboard, as well as copying and pasting
+      TODO: Add a template storage system
+TODO: Procedural generation
+TODO: Victory conditions
+TODO: Visibility and control - Players should have visibility of only certain systems and objects, and control over only certain systems and objects. 
+      Multiplayer support should be easy. 
+TODO: Conditional components - components that only function under certain conditions - or have different functionality based on certain conditions. 
+      For example: A planet only generates biomass capacity and living space when it's within a certain distance of a sun. 
+      TODO: Handling of the consequences of running out of resources during certain conditions
+TODO: Weapons: 
+      1. Energy absorption (hardcoded resource, also based on mass) exists. 
+      2. If an object has more energy than its capacity, it will absorb it with energy absorption. 
+      3. If we go beyond the energy absorption stat, the object will explode, and cease to exist. 
+      4. Any leftover energy will be transferred to other objects, based on this: 
+            1. The energy will be split evenly between any objects within 0.01 (the fudge factor) units of the object. 
+            2. If no such objects exist, this calculation will be used: 
+                  1. Take 1/d^2 for each object, where d is the distance between the object in question and the destroyed object. 
+                  2. This will be the portion that each object receives. It will be adjusted to add up to 1, so that no energy is lost (or gained).
+      5. Laser energy relays - can be used to transmit energy, or transmit TOO MUCH energy (to make objects blow up) if you choose 

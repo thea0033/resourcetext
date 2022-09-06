@@ -19,6 +19,11 @@ impl ReadableSystems {
         }
         Ok(s)
     }
+    pub fn default() -> Self {
+        Self {
+            systems: HashMap::new(),
+        }
+    }
 }
 impl Merge for ReadableSystems {
     fn merge(&mut self, other: Self) {

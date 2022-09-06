@@ -1,7 +1,6 @@
 use crate::{
-    instr::{parse_options, queue::QueueID, Instr, InstrID, InstrLocation},
+    instr::{parse_options, InstrLocation},
     save::Package,
-    systems::object_id::ObjectID,
     ui::menu::{config::Config, constants, grab_menu_res, options::OptionTable, MenuResult},
 };
 
